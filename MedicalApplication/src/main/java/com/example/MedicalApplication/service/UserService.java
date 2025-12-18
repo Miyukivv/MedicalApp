@@ -1,4 +1,5 @@
 package com.example.MedicalApplication.service;
+
 import com.example.MedicalApplication.model.User;
 import com.example.MedicalApplication.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,9 @@ public class UserService {
     public User register(User user) {
         if (user.getEmail() == null) {
             throw new IllegalArgumentException("Email cannot be null");
+        }
+        if (user.getFirstName() == null || user.getLastName() == null) {
+            throw new IllegalArgumentException("First name and last name cannot be null");
         }
         return userRepository.save(user);
     }

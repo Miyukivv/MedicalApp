@@ -28,7 +28,7 @@ public class NotificationController {
         emailService.sendMedicationReminder(
                 user.getEmail(),
                 "Testowe powiadomienie o leku",
-                "Cześć " + user.getName() + ", to jest testowe powiadomienie o leku."
+                "Cześć " + user.getFullName() + ", to jest testowe powiadomienie o leku."
         );
 
         return "Notification email sent to " + user.getEmail();

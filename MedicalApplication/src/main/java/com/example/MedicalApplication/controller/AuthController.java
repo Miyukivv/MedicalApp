@@ -1,5 +1,6 @@
 package com.example.MedicalApplication.controller;
 
+import com.example.MedicalApplication.dto.RegisterRequest;
 import com.example.MedicalApplication.model.User;
 import com.example.MedicalApplication.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +19,23 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> register(@RequestBody User user) {
-        if (user.getEmail() == null || user.getPassword() == null) {
-            return ResponseEntity.badRequest().body("Email and Password must be provided.");
+    public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
+        if (req.getEmail() == null || req.getPassword() == null
+                || req.getFirstName() == null || req.getLastName() == null
+                || req.getRole() == null) {
+            return ResponseEntity.badRequest()
+                    .body("firstName, lastName, email, password and role must be provided.");
         }
+
+        User user = User.builder()
+                .firstName(req.getFirstName())
+                .lastName(req.getLastName())
+                .email(req.getEmail())
+                .password(req.getPassword())
+                .role(req.getRole())
+                .loggedIn(false)
+                .build();
+
         userService.register(user);
         return ResponseEntity.ok("User registered successfully!");
     }

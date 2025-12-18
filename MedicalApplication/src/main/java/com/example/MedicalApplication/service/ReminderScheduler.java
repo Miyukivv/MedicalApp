@@ -1,8 +1,6 @@
 package com.example.MedicalApplication.service;
 
 import com.example.MedicalApplication.model.Reminder;
-import com.example.MedicalApplication.service.EmailService;
-import com.example.MedicalApplication.service.ReminderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,25 +20,28 @@ public class ReminderScheduler {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime windowEnd = now.plusMinutes(1);
 
+        // szukamy reminderów na dziś / najbliższe 24h
         List<Reminder> upcoming = reminderService.findRemindersToSend(now, now.plusHours(24));
 
         for (Reminder reminder : upcoming) {
             LocalDateTime sendTime = reminder.getDoseDateTime()
                     .minusMinutes(reminder.getMinutesBefore());
+
+            // wysyłamy tylko w 1-minutowym oknie czasowym
             if (!sendTime.isBefore(now) && sendTime.isBefore(windowEnd)) {
                 var patient = reminder.getPatient();
                 var medication = reminder.getMedication();
 
                 if (patient.getEmail() != null && !patient.getEmail().isBlank()) {
                     String subject = "Przypomnienie o leku: " + medication.getName();
-                    String text = "Cześć " + patient.getName()
+                    String text = "Cześć " + patient.getFullName()
                             + ",\n\nza " + reminder.getMinutesBefore()
                             + " minut powinnaś/powinieneś przyjąć lek: "
-                            + medication.getName() + ".\n\nPozdrawiamy,\nMedicalApp";
+                            + medication.getName()
+                            + ".\n\nPozdrawiamy,\nMedicalApp";
 
                     emailService.sendMedicationReminder(patient.getEmail(), subject, text);
                 }
-
             }
         }
     }
