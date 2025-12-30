@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Profil</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+
+<body class="profile-body">
+
+<header class="topbar">
+    <div class="container topbar__inner topbar__inner--profile">
+        <div class="brand">Logo</div>
+
+        <div class="topbar__greeting">
+            Witaj <span th:text="${welcomeName}">Adam</span>, zdrowego dnia!
+        </div>
+
+        <div class="user-menu">
+            <button class="user-menu__btn" type="button">
+                <span class="user-menu__label">Ustawienia</span>
+                <span class="user-menu__icon" aria-hidden="true">⚙️</span>
+            </button>
+
+            <div class="user-menu__dropdown" role="menu">
+                <a class="user-menu__item" role="menuitem" href="/change-password">Zmień hasło</a>
+                <form th:action="@{/logout}" method="post" class="user-menu__logout">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="user-menu__item user-menu__item--danger user-menu__btnlink">
+                        Wyloguj się
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <nav class="nav nav--profile">
+            <a class="nav__link" th:href="@{/home}">Strona główna</a>
+            <a class="nav__link nav__link--active" th:href="@{/profile}">Profil</a>
+            <a class="nav__link" href="#">Status &amp; przegląd</a>
+            <a class="nav__link" href="#">Zarządzanie lekami</a>
+            <a class="nav__link" href="#">Zamienniki</a>
+            <a class="nav__link" href="#">Dla lekarza</a>
+        </nav>
+    </div>
+</header>
+
+<main class="profile-main">
+    <div class="container">
+
+        <div class="profile-header">
+            <div>
+                <div class="profile-header__title">Profil użytkownika</div>
+                <div class="profile-header__hint">Edytuj dane tylko po kliknięciu „Edytuj”.</div>
+            </div>
+
+            <div class="profile-toast" th:if="${saved}">
+                Zapisano zmiany ✅
+            </div>
+        </div>
+
+        <section class="profile-card">
+            <div class="profile-card__grid">
+
+                <aside class="profile-side">
+                    <div class="profile-avatar">
+                        <div class="profile-avatar__circle" aria-hidden="true">
+                            <div class="profile-avatar__head"></div>
+                            <div class="profile-avatar__body"></div>
+                        </div>
+                    </div>
+                    <div class="profile-badge">Konto pacjenta</div>
+                </aside>
+
+                <div class="profile-info">
+                    <h2 class="profile-name" th:text="${fullName}">Jan Kowalski</h2>
+
+                    <form id="profileForm" method="post" th:action="@{/profile}">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                        <div class="profile-fields">
+
+                            <div class="profile-field">
+                                <label>Data urodzenia</label>
+                                <input data-editable="1" class="profile-input" type="date"
+                                       name="birthDate" th:value="${birthDate}">
+                            </div>
+
+                            <div class="profile-field">
+                                <label>Oddział NFZ</label>
+                                <input data-editable="1" class="profile-input" type="text"
+                                       name="nfz" th:value="${nfz}" placeholder="np. Mazowiecki">
+                            </div>
+
+                            <div class="profile-field profile-field--full">
+                                <label>Opis</label>
+                                <textarea data-editable="1" class="profile-input profile-textarea"
+                                          name="description" rows="4"
+                                          th:text="${description}" placeholder="Krótki opis..."></textarea>
+                            </div>
+
+                        </div>
+
+                        <div class="profile-actions">
+                            <button id="cancelBtn" class="profile-btn profile-btn--ghost" type="button">Anuluj</button>
+                            <button id="editBtn" class="profile-btn profile-btn--soft" type="button">Edytuj</button>
+                            <button id="saveBtn" class="profile-btn profile-btn--primary" type="submit">Zapisz</button>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<script>
+    (() => {
+        const form = document.getElementById('profileForm');
+        const editBtn = document.getElementById('editBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const saveBtn = document.getElementById('saveBtn');
+
+        const fields = [...form.querySelectorAll('[data-editable="1"]')];
+        const initial = new Map(fields.map(el => [el.name, el.value]));
+
+        function setEditing(on){
+            fields.forEach(el => { el.disabled = !on; });
+            editBtn.hidden = on;
+            cancelBtn.hidden = !on;
+            saveBtn.hidden = !on;
+        }
+
+        //start: podgląd
+        setEditing(false);
+
+        editBtn.addEventListener('click', () => setEditing(true));
+
+        cancelBtn.addEventListener('click', () => {
+            fields.forEach(el => el.value = initial.get(el.name) ?? '');
+            setEditing(false);
+        });
+    })();
+</script>
+
+</body>
+</html>

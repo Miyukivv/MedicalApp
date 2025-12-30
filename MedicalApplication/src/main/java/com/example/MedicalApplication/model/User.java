@@ -44,6 +44,9 @@ public class User {
     @JsonIgnore
     private List<Medication> medications = new ArrayList<>();
 
+    private String birthDate;
+    private String nfzBranch;
+    private String description;
     @Transient
     public String getFullName() {
         String fn = firstName == null ? "" : firstName.trim();

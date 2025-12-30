@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Logowanie</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+
+<body class="login-body">
+
+<div class="login">
+    <section class="login-left">
+        <div class="login-left__inner">
+            <div class="login-logo">Logo</div>
+
+            <h1 class="login-title">
+                Cześć,<br>
+                <span>Witaj ponownie!</span>
+            </h1>
+
+            <p class="login-desc">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </p>
+        </div>
+    </section>
+
+    <!-- PRAWA STRONA -->
+    <section class="login-right">
+        <div class="login-right__inner">
+
+            <!-- komunikaty Spring Security -->
+            <div class="login-alert" th:if="${param.error}">
+                Nieprawidłowy e-mail lub hasło.
+            </div>
+            <div class="login-alert login-alert--ok" th:if="${param.logout}">
+                Wylogowano pomyślnie.
+            </div>
+
+            <form class="login-form" th:action="@{/perform_login}" method="post">
+                <!-- Email -->
+                <div class="field">
+                    <span class="field__label">Adres e-mail</span>
+                    <input class="field__input" type="email" name="email" placeholder="adam@mail.com" required>
+                </div>
+
+                <!-- Hasło -->
+                <div class="field">
+                    <span class="field__label">Hasło</span>
+                    <input class="field__input" type="password" name="password" placeholder="••••••••" required>
+                </div>
+
+                <div class="login-row">
+                    <label class="check">
+                        <input type="checkbox" name="remember-me">
+                        <span>Zapisz / zapamiętaj mnie</span>
+                    </label>
+
+                    <a class="login-link" th:href="@{/forgot-password}">Zapomniałeś hasła?</a>
+                </div>
+
+                <div class="login-actions">
+                    <button class="login-btn login-btn--primary" type="submit">Zaloguj</button>
+                    <a class="login-btn login-btn--outline" th:href="@{/register}">Zarejestruj</a>
+                </div>
+            </form>
+
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

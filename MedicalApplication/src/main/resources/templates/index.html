@@ -16,11 +16,13 @@
 
         <nav class="nav">
             <a class="nav__link nav__link--active" href="#">Strona główna</a>
-            <a class="nav__link" href="#">Dla pacjenta</a>
-            <a class="nav__link" href="#">Przypomnienia</a>
+            <a class="nav__link" th:href="@{/profile}">Profil</a>
+            <a class="nav__link" href="#">Status &amp; przegląd</a>
+            <a class="nav__link" href="#">Zarządzanie lekami</a>
             <a class="nav__link" href="#">Zamienniki</a>
             <a class="nav__link" href="#">Dla lekarza</a>
         </nav>
+
 
         <div class="user-menu">
             <button class="user-menu__btn" type="button" aria-haspopup="true" aria-expanded="false">
@@ -30,7 +32,12 @@
 
             <div class="user-menu__dropdown" role="menu" aria-label="Ustawienia konta">
                 <a class="user-menu__item" role="menuitem" href="/change-password">Zmień hasło</a>
-                <a class="user-menu__item user-menu__item--danger" role="menuitem" href="/logout">Wyloguj się</a>
+                <form th:action="@{/logout}" method="post" class="user-menu__logout">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="user-menu__item user-menu__item--danger user-menu__btnlink">
+                        Wyloguj się
+                    </button>
+                </form>
             </div>
         </div>
 
