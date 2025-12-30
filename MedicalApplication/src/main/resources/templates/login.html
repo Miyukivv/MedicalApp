@@ -43,7 +43,7 @@
                 <!-- Email -->
                 <div class="field">
                     <span class="field__label">Adres e-mail</span>
-                    <input class="field__input" type="email" name="email" placeholder="example@mail.com" required>
+                    <input id="loginEmail" class="field__input" type="email" name="email" placeholder="example@mail.com" required>
                 </div>
 
                 <!-- Hasło -->
@@ -54,7 +54,7 @@
 
                 <div class="login-row">
                     <label class="check">
-                        <input type="checkbox" name="remember-me">
+                        <input id="rememberEmail" type="checkbox" name="remember-me">
                         <span>Zapamiętaj mnie</span>
                     </label>
 
@@ -70,6 +70,39 @@
         </div>
     </section>
 </div>
+
+<script>
+    (function () {
+        const emailInput = document.getElementById('loginEmail');
+        const rememberBox = document.getElementById('rememberEmail');
+
+        if (!emailInput || !rememberBox) return;
+
+        // Wczytaj zapisany email
+        const saved = localStorage.getItem('rememberedEmail');
+        if (saved) {
+            emailInput.value = saved;
+            rememberBox.checked = true;
+        }
+
+        // Zapisuj/usuń przy zmianie
+        function sync() {
+            if (rememberBox.checked) {
+                localStorage.setItem('rememberedEmail', emailInput.value.trim());
+            } else {
+                localStorage.removeItem('rememberedEmail');
+            }
+        }
+
+        rememberBox.addEventListener('change', sync);
+        emailInput.addEventListener('input', () => {
+            if (rememberBox.checked) sync();
+        });
+
+        // Przy wysłaniu formularza też zapisz (na wszelki wypadek)
+        emailInput.form?.addEventListener('submit', sync);
+    })();
+</script>
 
 </body>
 </html>
