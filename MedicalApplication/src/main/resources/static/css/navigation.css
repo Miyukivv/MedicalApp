@@ -1,26 +1,45 @@
 /* TOPBAR + NAV */
-.topbar{
+.topbar {
     background: #473472;
     position: sticky;
     top: 0;
     z-index: 10;
 }
 
-.topbar__inner{
+.topbar__inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 1.1rem 0;
     gap: 1rem;
+    position: relative;
 }
 
-.brand{
+/* NAPIS POŚRODKU (overlay – nie wpływa na układ) */
+.topbar__greeting {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -110%); /* -110% żeby podnieść lekko jak na screenie */
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: .20em;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.brand {
     font-size: 2rem;
     font-weight: 800;
     color: #fff;
+    position: relative;
+    z-index: 3;
 }
 
-.nav{
+.nav {
     background: #fff;
     border-radius: .7rem;
     padding: .7rem 1rem;
@@ -29,11 +48,15 @@
     flex-wrap: wrap;
     justify-content: center;
     margin-bottom: -4.8rem;
+    position: relative;
+    z-index: 3;
 }
 
-.nav--overlap{ margin-bottom: -4.5rem; }
+.nav--overlap {
+    margin-bottom: -4.5rem;
+}
 
-.nav__link{
+.nav__link {
     color: #473472;
     font-weight: 600;
     padding: .4rem .7rem;
@@ -41,5 +64,10 @@
     transition: background .2s ease;
 }
 
-.nav__link:hover{ background: #D6F4ED; }
-.nav__link--active{ background: rgba(214,244,237,.85); }
+.nav__link:hover {
+    background: #D6F4ED;
+}
+
+.nav__link--active {
+    background: rgba(214, 244, 237, .85);
+}

@@ -1,10 +1,9 @@
 <!doctype html>
-<html lang="pl">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Aplikacja medyczna</title>
-<!--    <link rel="stylesheet" th:href="@{../static/style.css}">-->
+    <title>Aplikacja medyczna - strona główna</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
@@ -14,15 +13,24 @@
     <div class="container topbar__inner">
         <div class="brand">Logo</div>
 
+        <div class="topbar__greeting">
+            Witaj <span th:text="${welcomeName}">Imię</span>, zdrowego dnia!
+        </div>
+
         <nav class="nav">
-            <a class="nav__link nav__link--active" href="#">Strona główna</a>
+            <a class="nav__link nav__link--active" th:href="@{/home}">Strona główna</a>
             <a class="nav__link" th:href="@{/profile}">Profil</a>
             <a class="nav__link" href="#">Status &amp; przegląd</a>
-            <a class="nav__link" href="#">Zarządzanie lekami</a>
+            <a class="nav__link" th:href="@{/medications}">Zarządzanie lekami</a>
             <a class="nav__link" href="#">Zamienniki</a>
-            <a class="nav__link" href="#">Dla lekarza</a>
+            <a class="nav__link" th:href="@{/doctor}" sec:authorize="hasRole('DOCTOR')">Dla lekarza</a>
         </nav>
 
+<!--        do sprawdzenia danych użytkownika-->
+<!--        <div style="color:#fff; font-size:12px;">-->
+<!--            auth: <span sec:authentication="name"></span> |-->
+<!--            roles: <span sec:authentication="principal.authorities"></span>-->
+<!--        </div>-->
 
         <div class="user-menu">
             <button class="user-menu__btn" type="button" aria-haspopup="true" aria-expanded="false">

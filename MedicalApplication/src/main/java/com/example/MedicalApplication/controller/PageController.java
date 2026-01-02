@@ -32,8 +32,11 @@ public class PageController {
     }
 
     @GetMapping("/home")
-    public String homeAfterLogin() {
-        return "main";
+    public String homeAfterLogin(Model model, Authentication authentication) {
+        var user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        model.addAttribute("welcomeName", user.getFirstName());
+
+        return "home";
     }
 
     @GetMapping("/profile")
@@ -66,5 +69,13 @@ public class PageController {
 
         ra.addFlashAttribute("saved", true);
         return "redirect:/profile";
+    }
+
+    @GetMapping("/medications")
+    public String medications(Model model, Authentication authentication) {
+        var user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        model.addAttribute("welcomeName", user.getFirstName());
+
+        return "medications";
     }
 }

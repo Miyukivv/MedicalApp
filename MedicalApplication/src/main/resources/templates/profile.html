@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Profil</title>
+    <title>Aplikacja medyczna - profil</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
@@ -14,7 +14,7 @@
         <div class="brand">Logo</div>
 
         <div class="topbar__greeting">
-            Witaj <span th:text="${welcomeName}">Adam</span>, zdrowego dnia!
+            Witaj <span th:text="${welcomeName}">Imię</span>, zdrowego dnia!
         </div>
 
         <div class="user-menu">
@@ -42,7 +42,7 @@
             <a class="nav__link" href="#">Status &amp; przegląd</a>
             <a class="nav__link" href="#">Zarządzanie lekami</a>
             <a class="nav__link" href="#">Zamienniki</a>
-            <a class="nav__link" href="#">Dla lekarza</a>
+            <a class="nav__link" th:href="@{/doctor}" sec:authorize="hasRole('DOCTOR')">Dla lekarza</a>
         </nav>
     </div>
 </header>

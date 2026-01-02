@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="pl"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aplikacja medyczna - zarządzanie lekami</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="container topbar__inner">
+    <div class="brand">Logo</div>
+
+    <!-- napis na środku (overlay – nie rusza layoutu) -->
+    <div class="topbar__greeting">
+      Witaj <span th:text="${welcomeName}">Imię</span>, zdrowego dnia!
+    </div>
+
+    <nav class="nav">
+      <a class="nav__link" th:href="@{/home}">Strona główna</a>
+      <a class="nav__link" th:href="@{/profile}">Profil</a>
+      <a class="nav__link" href="#">Status &amp; przegląd</a>
+      <a class="nav__link nav__link--active" th:href="@{/medications}">Zarządzanie lekami</a>
+      <a class="nav__link" href="#">Zamienniki</a>
+      <a class="nav__link" th:href="@{/doctor}" sec:authorize="hasRole('DOCTOR')">Dla lekarza</a>
+    </nav>
+
+    <div class="user-menu">
+      <button class="user-menu__btn" type="button" aria-haspopup="true" aria-expanded="false">
+        <span class="user-menu__label">Ustawienia</span>
+        <span class="user-menu__icon" aria-hidden="true">⚙️</span>
+      </button>
+
+      <div class="user-menu__dropdown" role="menu" aria-label="Ustawienia konta">
+        <a class="user-menu__item" role="menuitem" href="/change-password">Zmień hasło</a>
+        <form th:action="@{/logout}" method="post" class="user-menu__logout">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+          <button type="submit" class="user-menu__item user-menu__item--danger user-menu__btnlink">
+            Wyloguj się
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="meds">
+  <div class="container meds__container">
+
+    <section class="meds-card">
+
+      <div class="meds-grid">
+
+        <!-- LEWA KOLUMNA -->
+        <aside class="meds-left">
+          <h2 class="meds-left__title">Przyjmowane leki:</h2>
+
+          <!-- wyszukiwarka (opcjonalnie: filtr po JS / backend) -->
+          <div class="meds-search">
+            <input class="meds-search__input" type="text" placeholder="nazwa leku" id="medSearch">
+            <span class="meds-search__dot" aria-hidden="true"></span>
+          </div>
+
+          <div class="meds-list" id="medList">
+            <a class="meds-item"
+               th:each="m : ${medications}"
+               th:href="@{/medications(id=${m.id})}"
+               th:classappend="${selected != null and selected.id == m.id} ? ' meds-item--active' : ''">
+
+              <span class="meds-item__name" th:text="${m.name}">nazwa leku</span>
+
+              <span class="meds-item__status"
+                    th:classappend="${m.active} ? ' meds-item__status--ok' : ' meds-item__status--bad'"
+                    aria-hidden="true"></span>
+            </a>
+          </div>
+        </aside>
+
+        <!-- PRAWA KOLUMNA -->
+        <section class="meds-right">
+
+          <div class="meds-right__header">
+            <div class="meds-right__patient">
+              Pacjent: <span th:text="${patientFullName}">Jan Kowalski</span>
+            </div>
+          </div>
+
+          <!-- jeśli nie ma wybranego -->
+          <div class="meds-empty" th:if="${selected == null}">
+            Wybierz lek z listy po lewej.
+          </div>
+
+          <!-- jeśli jest wybrany -->
+          <div th:if="${selected != null}">
+            <h3 class="meds-right__title" th:text="${selected.name}">Nazwa leku</h3>
+
+            <form id="medForm" class="meds-form" method="post" th:action="@{/medications/save}">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+              <input type="hidden" name="id" th:value="${selected.id}"/>
+
+              <div class="meds-fields">
+
+                <div class="meds-field">
+                  <div class="meds-field__label">Dawka</div>
+                  <input class="meds-field__input" type="text" name="dose"
+                         th:value="${selected.dose}" data-editable="1" disabled>
+                </div>
+
+                <div class="meds-field meds-field--split">
+                  <div class="meds-field__label">Godzina przyjęcia</div>
+                  <input class="meds-field__input" type="time" name="time"
+                         th:value="${selected.time}" data-editable="1" disabled>
+                </div>
+
+              </div>
+
+              <div class="meds-meta">
+                <div class="meds-meta__row">
+                  <span class="meds-meta__label">Ostatnia modyfikacja:</span>
+                  <span class="meds-meta__value"
+                        th:text="${#temporals.format(selected.updatedAt, 'dd.MM.yyyy')}">12.12.2025</span>
+                </div>
+
+                <div class="meds-meta__row">
+                  <span class="meds-meta__label">Podmiot modyfikujący:</span>
+                  <span class="meds-meta__value" th:text="${selected.updatedBy}">dr Jan Kowalski</span>
+                </div>
+              </div>
+
+              <div class="meds-actions">
+                <div class="meds-actions__left">
+                  <button id="cancelBtn" class="meds-btn meds-btn--ghost" type="button" hidden>Anuluj</button>
+                  <button id="saveBtn" class="meds-btn meds-btn--primary" type="submit" hidden>Zapisz</button>
+                </div>
+
+                <div class="meds-actions__right">
+                  <button id="editBtn" class="meds-btn meds-btn--soft" type="button">Edytuj</button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+
+        </section>
+
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script>
+  // Edycja (jak na profilu): blokada pól dopóki nie klikniesz "Edytuj"
+  (() => {
+    const form = document.getElementById('medForm');
+    if (!form) return;
+
+    const editBtn = document.getElementById('editBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const fields = [...form.querySelectorAll('[data-editable="1"]')];
+    const initial = new Map(fields.map(el => [el.name, el.value]));
+
+    function setEditing(on){
+      fields.forEach(el => el.disabled = !on);
+      editBtn.hidden = on;
+      cancelBtn.hidden = !on;
+      saveBtn.hidden = !on;
+    }
+
+    setEditing(false);
+
+    editBtn.addEventListener('click', () => setEditing(true));
+    cancelBtn.addEventListener('click', () => {
+      fields.forEach(el => el.value = initial.get(el.name) ?? '');
+      setEditing(false);
+    });
+  })();
+
+  // Prosty filtr listy po nazwie (frontend)
+  (() => {
+    const input = document.getElementById('medSearch');
+    const list = document.getElementById('medList');
+    if (!input || !list) return;
+
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      [...list.querySelectorAll('.meds-item')].forEach(a => {
+        const name = a.querySelector('.meds-item__name')?.textContent?.toLowerCase() ?? '';
+        a.style.display = name.includes(q) ? '' : 'none';
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
