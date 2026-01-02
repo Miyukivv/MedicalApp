@@ -1,0 +1,33 @@
+@media (max-width: 900px){
+    .topbar__inner{ flex-wrap: wrap; }
+    .nav{ width: 100%; justify-content: flex-start; }
+
+    .hero__content{ flex-direction: column; }
+    .hero__left, .hero__right{ width: 100%; }
+    .hero__right{ justify-content: center; }
+
+    .feature, .feature--reverse{ flex-direction: column; }
+    .feature__text, .feature__media{ width: 100%; }
+
+    .testimonials{ flex-direction: column; }
+    .testimonials__media, .testimonials__text{ width: 100%; }
+
+    .footer__top{ flex-direction: column; }
+    .newsletter, .newsletter-form{ width: 100%; }
+
+    .footer__bottom{ grid-template-columns: 1fr 1fr; }
+
+    .login{ flex-direction: column; }
+    .login-left, .login-right{ padding: 3rem 1.5rem; }
+    .login-left__inner{ width: min(86%, 760px); max-width: 760px; }
+    .login-actions{ margin-top: 2rem; }
+
+    .profile-card__grid{ grid-template-columns: 1fr; }
+    .profile-actions{ justify-content: center; }
+}
+
+@media (max-width: 520px){
+    .footer__bottom{ grid-template-columns: 1fr; }
+    .search{ width: 100%; }
+    .profile-fields{ grid-template-columns: 1fr; }
+}

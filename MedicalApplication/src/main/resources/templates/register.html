@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rejestracja</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="login-body">
+
+<div class="login register">
+    <!-- LEWA STRONA -->
+    <section class="login-left">
+        <div class="login-left__inner">
+            <div class="login-logo">Logo</div>
+
+            <h1 class="login-title register-title">
+                Cześć,<br>
+                <span>Poznajmy się!</span>
+            </h1>
+
+            <p class="login-desc">
+                <b style="font-size:x-large">Twoje zdrowie w jednym miejscu.</b><br>
+                Zarządzaj wizytami, lekami i dokumentacją medyczną w prosty i bezpieczny sposób. Niezależnie czy jesteś pacjentem czy lekarzem - wszystko, czego potrzebujesz, masz pod ręką.
+            </p>
+        </div>
+    </section>
+
+    <!-- PRAWA STRONA -->
+    <section class="login-right">
+        <div class="login-right__inner">
+
+            <!-- Flash message (opcjonalnie) -->
+            <div class="login-alert login-alert--ok" th:if="${msg}" th:text="${msg}"></div>
+            <div class="login-alert" th:if="${error}" th:text="${error}"></div>
+
+            <!-- UWAGA: tu jest NAJWAŻNIEJSZA zmiana -> registerRequest -->
+            <form class="login-form register-form"
+                  th:action="@{/register}"
+                  method="post"
+                  th:object="${registerRequest}">
+
+                <!-- Imię -->
+                <div class="field">
+                    <span class="field__label">Imię</span>
+                    <input class="field__input" type="text"
+                           th:field="*{firstName}" placeholder="Adam" required>
+                </div>
+
+                <!-- Nazwisko -->
+                <div class="field">
+                    <span class="field__label">Nazwisko</span>
+                    <input class="field__input" type="text"
+                           th:field="*{lastName}" placeholder="Nowak" required>
+                </div>
+
+                <!-- Email -->
+                <div class="field">
+                    <span class="field__label">Adres e-mail</span>
+                    <input class="field__input" type="email"
+                           th:field="*{email}" placeholder="example@mail.com" required>
+                </div>
+
+                <!-- Hasło -->
+                <div class="field">
+                    <span class="field__label">Hasło</span>
+                    <input id="regPass" class="field__input" type="password"
+                           th:field="*{password}" placeholder="••••••••" required>
+                </div>
+
+                <!-- Powtórz hasło (nie zapisujemy w DTO, tylko walidujemy w JS) -->
+                <div class="field">
+                    <span class="field__label">Powtórz hasło</span>
+                    <input id="regPass2" class="field__input" type="password"
+                           name="password2" placeholder="••••••••" required>
+                </div>
+
+                <!-- Typ konta -->
+                <div class="field field--radio" id="roleField">
+                    <span class="field__label">Typ konta</span>
+
+                    <div class="field__radio-pad">
+                        <label class="radio">
+                            <input type="radio"
+                                   th:field="*{role}"
+                                   th:value="${T(com.example.MedicalApplication.model.UserRole).PATIENT}"
+                                   checked>
+                            <span>Pacjent</span>
+                        </label>
+
+                        <label class="radio">
+                            <input type="radio"
+                                   th:field="*{role}"
+                                   th:value="${T(com.example.MedicalApplication.model.UserRole).DOCTOR}">
+                            <span>Lekarz</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- PWZ (pojawia się tylko dla Lekarz) -->
+                <div class="field field--pwz" id="pwzField" aria-hidden="true">
+                    <span class="field__label">Numer PWZ</span>
+                    <input id="pwzInput" class="field__input" type="text" th:field="*{pwz}" placeholder="1234567" inputmode="numeric" autocomplete="off">
+                </div>
+
+                <!-- PRZYCISKI -->
+                <div class="login-actions register-actions">
+                    <a class="login-btn login-btn--outline" th:href="@{/login}">Zaloguj</a>
+                    <button class="login-btn login-btn--primary" type="submit">Zarejestruj</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+
+<script>
+    // Prosta walidacja: hasła muszą być takie same
+    (function () {
+        const p1 = document.getElementById('regPass');
+        const p2 = document.getElementById('regPass2');
+        if (!p1 || !p2) return;
+
+        function validate() {
+            if (p2.value && p1.value !== p2.value) {
+                p2.setCustomValidity("Hasła nie są takie same");
+            } else {
+                p2.setCustomValidity("");
+            }
+        }
+
+        p1.addEventListener('input', validate);
+        p2.addEventListener('input', validate);
+        p2.form?.addEventListener('submit', validate);
+    })();
+
+    // PWZ pokazuj tylko dla Lekarz + wymagaj tylko wtedy
+    (function () {
+        const form = document.querySelector('.register-form');
+        const pwzField = document.getElementById('pwzField');
+        const pwzInput = document.getElementById('pwzInput');
+        if (!form || !pwzField || !pwzInput) return;
+
+        const roleInputs = form.querySelectorAll('input[type="radio"][name$="role"], input[type="radio"][name="role"]');
+
+        function isDoctorSelected() {
+            const checked = form.querySelector('input[type="radio"][name$="role"]:checked, input[type="radio"][name="role"]:checked');
+            return checked && checked.value === 'DOCTOR';
+        }
+
+        function syncPwzUI() {
+            const doctor = isDoctorSelected();
+
+            form.classList.toggle('is-doctor', doctor);
+
+            pwzField.setAttribute('aria-hidden', doctor ? 'false' : 'true');
+
+            if (doctor) {
+                pwzInput.required = true;
+            } else {
+                pwzInput.required = false;
+                pwzInput.value = '';
+                pwzInput.setCustomValidity('');
+            }
+        }
+
+        roleInputs.forEach(r => r.addEventListener('change', syncPwzUI));
+        window.addEventListener('DOMContentLoaded', syncPwzUI);
+        syncPwzUI();
+    })();
+</script>
+
+</body>
+</html>

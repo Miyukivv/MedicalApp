@@ -233,7 +233,7 @@ a {
 .hero__bg {
     position: absolute;
     inset: 0;
-    background-image: url("img/apteka.jpg");
+    background-image: url("../img/apteka.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

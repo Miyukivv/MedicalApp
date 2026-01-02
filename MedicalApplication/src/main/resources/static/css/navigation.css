@@ -1,0 +1,45 @@
+/* TOPBAR + NAV */
+.topbar{
+    background: #473472;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.topbar__inner{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 0;
+    gap: 1rem;
+}
+
+.brand{
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.nav{
+    background: #fff;
+    border-radius: .7rem;
+    padding: .7rem 1rem;
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: -4.8rem;
+}
+
+.nav--overlap{ margin-bottom: -4.5rem; }
+
+.nav__link{
+    color: #473472;
+    font-weight: 600;
+    padding: .4rem .7rem;
+    border-radius: .6rem;
+    transition: background .2s ease;
+}
+
+.nav__link:hover{ background: #D6F4ED; }
+.nav__link--active{ background: rgba(214,244,237,.85); }

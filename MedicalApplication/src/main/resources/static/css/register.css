@@ -1,0 +1,142 @@
+/* ===== Register layout (prawy panel + odstępy) ===== */
+.register .login-right__inner{
+    width: min(560px, 92%);
+}
+.register-form .field{
+    margin: 1rem 0;
+}
+.register-actions{
+    margin-top: 2.2rem;
+}
+
+/* ===== Pole "Typ konta" (radio) stylowane jak inne inputy ===== */
+
+/* Wyłącz domyślne pseudo-elementy .field (slot + kreska),
+   bo zrobimy je na kontenerze .field__radio-pad */
+.field--radio::before,
+.field--radio::after{
+    content: none;
+}
+
+/* Ramka + padding identyczny jak w inputach */
+.field--radio .field__radio-pad{
+    width: 100%;
+    background: #fff;
+    border: 3px solid #473472;
+    border-radius: .35rem;
+    padding: 2rem 1rem .9rem 3.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+}
+
+/* Fioletowy "slot" po lewej (animowany na focus) */
+.field--radio .field__radio-pad::before{
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    bottom: 2px;
+    width: 2.1rem;
+    border-radius: .25rem 0 0 .25rem;
+    background: #473472;
+    pointer-events: none;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 220ms ease;
+    z-index: 0;
+}
+
+/* Pionowa kreska oddzielająca slot od treści */
+.field--radio .field__radio-pad::after{
+    content: "";
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    left: 2.2rem;
+    width: 3px;
+    background: #473472;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Pokazuj slot gdy fokus jest w środku (klik w radio też łapie focus-within) */
+.field--radio:focus-within .field__radio-pad::before{
+    transform: scaleX(1);
+}
+
+/* Pojedyncza linia opcji radiowej (radio + tekst) */
+.field--radio .radio{
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    margin: 0;
+    color: #473472;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;                  /* nad slotem/kreską */
+}
+
+/* Custom radio: obręcz */
+.field--radio .radio input{
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid #473472;
+    border-radius: 999px;
+    background: #fff;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    flex: 0 0 auto;
+}
+
+/* Custom radio: kropka w środku */
+.field--radio .radio input:checked::after{
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: #473472;
+}
+
+/* Etykieta "Typ konta" ma być nad ramką (jak w innych polach) */
+.field--radio .field__label{
+    z-index: 2;
+}
+
+/* ===== Animacja przesuwania formularza + rozwijanie PWZ ===== */
+
+.register-form{
+    overflow: visible;
+}
+
+/* kontener PWZ jest ukrywany “na wysokość” + opacity */
+#pwzField{
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    margin-top: 0;
+    margin-bottom: 0;
+    transition: max-height 350ms ease, opacity 220ms ease, transform 350ms ease, margin 350ms ease;
+}
+
+/* po wyborze Lekarz -> pokaż PWZ */
+.register-form.is-doctor #pwzField{
+    max-height: 120px;          /* musi być >= wysokość pola */
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    margin-top: 1rem;           /* taki sam odstęp jak reszta .field */
+    margin-bottom: 1rem;
+}
+
+/* “Płynne przesunięcie w górę” całego formularza (wizualnie) */
+.register-form{
+    transition: transform 350ms ease;
+}
+.register-form.is-doctor{
+    transform: translateY(-22px);  /* dostosuj: -18..-32px jak chcesz */
+}
