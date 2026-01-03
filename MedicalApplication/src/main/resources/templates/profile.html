@@ -17,6 +17,15 @@
             Witaj <span th:text="${welcomeName}">Imię</span>, zdrowego dnia!
         </div>
 
+        <nav class="nav nav--profile">
+            <a class="nav__link" th:href="@{/home}">Strona główna</a>
+            <a class="nav__link nav__link--active" th:href="@{/profile}">Profil</a>
+            <a class="nav__link" href="#">Status &amp; przegląd</a>
+            <a class="nav__link" th:href="@{/medications}">Zarządzanie lekami</a>
+            <a class="nav__link" href="#">Zamienniki</a>
+            <a class="nav__link" th:href="@{/doctor}" sec:authorize="hasRole('DOCTOR')">Dla lekarza</a>
+        </nav>
+
         <div class="user-menu">
             <button class="user-menu__btn" type="button">
                 <span class="user-menu__label">Ustawienia</span>
@@ -33,17 +42,6 @@
                 </form>
             </div>
         </div>
-    </div>
-
-    <div class="container">
-        <nav class="nav nav--profile">
-            <a class="nav__link" th:href="@{/home}">Strona główna</a>
-            <a class="nav__link nav__link--active" th:href="@{/profile}">Profil</a>
-            <a class="nav__link" href="#">Status &amp; przegląd</a>
-            <a class="nav__link" href="#">Zarządzanie lekami</a>
-            <a class="nav__link" href="#">Zamienniki</a>
-            <a class="nav__link" th:href="@{/doctor}" sec:authorize="hasRole('DOCTOR')">Dla lekarza</a>
-        </nav>
     </div>
 </header>
 
