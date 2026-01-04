@@ -79,15 +79,11 @@ public class SecurityConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("Nie ma usera: " + email));
     }
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+   @Bean
+   public PasswordEncoder passwordEncoder() {
+       return new BCryptPasswordEncoder();
+   }
 
-    //chwilowo na testy z haslem niezahashowanym 
-    @Bean
-public PasswordEncoder passwordEncoder() {
-    return org.springframework.security.crypto.password.NoOpPasswordEncoder.getInstance();
-}
+
 
 }
