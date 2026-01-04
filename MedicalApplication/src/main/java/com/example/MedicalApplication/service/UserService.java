@@ -34,9 +34,9 @@ public class UserService {
                 .filter(u -> passwordEncoder.matches(rawPassword, u.getPassword()));
     }
 
-    // public User save(User user) {
-    //     return userRepository.save(user);
-    // }
+    public User save(User user) {
+        return userRepository.save(user);
+    }
 
     public List<User> getAll() {
         return userRepository.findAll();
