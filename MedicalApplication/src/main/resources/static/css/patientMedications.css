@@ -1,0 +1,363 @@
+/* =========================
+   DOCTOR MEDICATIONS (FIGMA PANEL)
+   ========================= */
+
+.doc-no-scroll-body{
+    overflow: hidden;
+}
+
+.docmeds{
+    background: linear-gradient(180deg, rgba(83,98,158,.45) 0%, rgba(46,36,72,.92) 100%);
+    min-height: calc(100vh - var(--topbar-h));
+    padding: 35px 0 35px;
+}
+
+.docmeds-shell{
+    width: 100%;
+}
+
+.docmeds-panel{
+    width: min(1396px, calc(100% - 38px));
+    margin: 0 auto;
+    height: calc(100vh - var(--topbar-h) - var(--meds-vpad));
+}
+
+.docmeds-panel__inner{
+    height: 100%;
+    background: #473472;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.docmeds-grid{
+    height: 100%;
+    display: grid;
+    grid-template-columns: 465px 1fr;
+}
+
+/* LEFT */
+.docmeds-left{
+    background: #473472;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+.docmeds-left__select{
+    padding: 14px 18px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.docmeds-list{
+    overflow: auto;
+    padding: 18px 16px;
+    margin: 0;
+    background: #533D85;
+    min-height: 0;
+}
+
+.docmeds-list::-webkit-scrollbar{ width: 10px; }
+.docmeds-list::-webkit-scrollbar-thumb{
+    background: rgba(255,255,255,.22);
+    border-radius: 999px;
+}
+.docmeds-list::-webkit-scrollbar-track{ background: transparent; }
+
+.docmeds-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    text-decoration: none;
+    padding: 2px 6px;
+    color: #fff;
+}
+
+.docmeds-item--active{
+    background: #fff;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    padding: 10px 16px;
+    margin-right: 12px;
+}
+
+.docmeds-item__name{
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 1;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.docmeds-item--active .docmeds-item__name{
+    color: #473472;
+}
+
+.docmeds-item__left{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.docmeds-item__lock{
+    font-size: 22px;
+    line-height: 1;
+    color: #000;
+}
+
+.docmeds-dot{
+    width: 39px;
+    height: 37px;
+    border-radius: 9999px;
+    flex: 0 0 auto;
+}
+
+.docmeds-dot--green{ background: #1BC768; }
+.docmeds-dot--red{ background: #C71B1B; }
+.docmeds-dot--blue{ background: #2A79FF; }
+
+.docmeds-left__bottom{
+    margin-top: 0;
+}
+
+.docmeds-left__add{
+    width: 100%;
+    height: 84px;
+    border: 0;
+    -moz-border-radius-bottomleft: 7px;
+    background: #392B58;
+    color: #fff;
+    font-weight: 700;
+    font-size: 30px;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* RIGHT */
+.docmeds-right{
+    position: relative;
+    padding: 10px 42px 26px;
+    height: 100%;
+}
+
+.docmeds-right__header{
+    display: flex;
+    justify-content: center;
+}
+
+.docmeds-right__patient{
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.docmeds-right__title{
+    margin: 24px 0 0;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 60px;
+    font-weight: 700;
+    color: #473472;
+}
+
+.docmeds-empty{
+    margin-top: 40px;
+    font-size: 22px;
+    color: rgba(0,0,0,.7);
+    text-align: center;
+}
+
+.docmeds-view{
+    margin-top: 56px;
+    display: grid;
+    gap: 18px;
+    width: min(797px, 100%);
+}
+
+.docmeds-box{
+    background: #fff;
+    border: 4px solid #473472;
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    min-height: 90px;
+    overflow: hidden;
+}
+
+.docmeds-box__label,
+.docmeds-box__value{
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 18px 14px;
+
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: #473472;
+}
+
+.docmeds-edit{
+    display: none;
+    margin-top: 28px;
+    width: min(900px, 100%);
+}
+
+.docmeds-edit__row{
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 18px;
+    align-items: center;
+    margin: 14px 0;
+}
+
+.docmeds-edit__label{
+    font-size: 22px;
+    font-weight: 700;
+    color: #473472;
+}
+
+.docmeds-edit__input{
+    width: 100%;
+    height: 56px;
+    border: 0;
+    outline: none;
+    background: #e6e6e6;
+    border-radius: 6px;
+    padding: 0 14px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #473472;
+}
+
+.docmeds-meta{
+    margin-top: 34px;
+    display: grid;
+    gap: 16px;
+    color: #473472;
+    font-size: 30px;
+    font-weight: 500;
+    width: min(900px, 100%);
+}
+
+.docmeds-meta__row{
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    align-items: center;
+}
+
+.docmeds-meta__label{ text-align: left; }
+.docmeds-meta__value{ text-align: left; }
+
+.docmeds-warning{
+    position: absolute;
+    left: 42px;
+    right: 42px;
+    bottom: 26px;
+
+    height: 80px;
+    background: #615876;
+    border-radius: 1px;
+    display: grid;
+    place-items: center;
+}
+
+.docmeds-warning::before{
+    content: "";
+    position: absolute;
+    inset: 7px;
+    background: #fff;
+    border-radius: 7px;
+    box-shadow: 0 4px 4px rgba(0,0,0,.25);
+}
+
+.docmeds-warning > *{
+    position: relative;
+    z-index: 1;
+}
+
+.docmeds-warning{
+    font-size: 24px;
+    font-weight: 500;
+    color: #000;
+    text-align: center;
+    padding: 0 14px;
+}
+
+.docmeds-warning__icon{
+    color: #C71B1B;
+    font-weight: 900;
+    font-size: 26px;
+    margin: 0 12px;
+}
+
+.docmeds-actions{
+    position: absolute;
+    left: 42px;
+    right: 42px;
+    bottom: 26px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.docmeds-warning + .docmeds-actions,
+.docmeds-warning ~ .docmeds-actions{
+    display: none;
+}
+
+.docmeds-actions__left,
+.docmeds-actions__right{
+    display: flex;
+    gap: 18px;
+}
+
+.docmeds-btn{
+    width: 167px;
+    height: 60px;
+    background: #7E7495;
+    border: 4px solid #7E7495;
+    border-radius: 1px;
+    color: #fff;
+    font-size: 30px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.docmeds-form.doc-is-editing .docmeds-view{ display: none; }
+.docmeds-form.doc-is-editing .docmeds-edit{ display: block; }
+
+@media (max-width: 1100px){
+    .docmeds-panel__inner{
+        height: auto;
+        min-height: 740px;
+    }
+    .docmeds-grid{
+        grid-template-columns: 1fr;
+    }
+    .docmeds-left{
+        grid-template-rows: auto auto auto;
+    }
+    .docmeds-warning,
+    .docmeds-actions{
+        position: static;
+        margin-top: 28px;
+    }
+}
+
+/* te zmienne możesz zostawić wspólne (nie kolidują) */
+:root{
+    --topbar-h: 129px;
+    --meds-vpad: 60px;
+}
+
+.docmeds__container{
+    height: calc(100vh - var(--topbar-h));
+    display: flex;
+}

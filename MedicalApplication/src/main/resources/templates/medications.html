@@ -55,7 +55,11 @@
             <section class="meds-panel">
                 <div class="meds-panel__inner">
 
-                    <div class="meds-grid">
+                    <!-- sel: selected albo pierwszy z listy, albo null -->
+                    <!-- canEditSel: edycja możliwa jeśli lek NIE jest od lekarza -->
+                    <div class="meds-grid"
+                         th:with="sel=${selected != null ? selected : (!#lists.isEmpty(medications) ? medications[0] : null)},
+                                  canEditSel=${sel != null and !sel.createdByDoctor}">
 
                         <!-- LEWA KOLUMNA -->
                         <aside class="meds-left">
@@ -65,27 +69,24 @@
 
                             <div class="meds-list" id="medList">
 
-                                <!-- opcjonalnie: komunikat gdy pusto -->
-                                <div class="meds-empty" th:if="${#lists.isEmpty(medications)}">
-                                    Brak leków.
+                                <div class="meds-empty" th:if="${sel == null}">
+                                    Brak leków do wyświetlenia.
                                 </div>
 
                                 <a class="meds-item"
                                    th:each="m : ${medications}"
                                    th:href="@{/medications(id=${m.id})}"
-                                   th:classappend="${selected != null and selected.id == m.id} ? ' meds-item--active' : ''">
+                                   th:classappend="${sel != null and sel.id == m.id} ? ' meds-item--active' : ''">
 
                                     <div class="meds-item__left">
                                         <span class="meds-item__name" th:text="${m.name}">nazwa leku</span>
 
-                                        <!-- kłódka jeśli lek od lekarza (pacjent nie edytuje) -->
                                         <span class="meds-item__lock"
                                               th:if="${m.createdByDoctor}"
                                               aria-label="Lek zablokowany"
                                               title="Lek od lekarza">🔒</span>
                                     </div>
 
-                                    <!-- kropka statusu -->
                                     <span class="meds-dot"
                                           th:classappend="${m.status == 'TAKEN'} ? ' meds-dot--green' :
                                                          (${m.status == 'NOT_REQUIRED'} ? ' meds-dot--blue' : ' meds-dot--red')"
@@ -93,7 +94,6 @@
                                 </a>
                             </div>
 
-                            <!-- DODAJ NOWY LEK -->
                             <form th:action="@{/medications/new}" method="post" class="meds-left__bottom">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                                 <button class="meds-left__add" type="submit">Dodaj nowy lek</button>
@@ -103,38 +103,33 @@
                         <!-- PRAWA KOLUMNA -->
                         <section class="meds-right">
 
-                            <div class="meds-right__header">
-                                <div class="meds-right__patient">
-                                    Pacjent: <span th:text="${userFullName}">Jan Kowalski</span>
-                                </div>
+                            <!-- jeśli brak leków -->
+                            <div class="meds-empty" th:if="${sel == null}">
+                                Brak leków do wyświetlenia.
                             </div>
 
-                            <!-- jeśli nie ma wybranego -->
-                            <div class="meds-empty" th:if="${selected == null}">
-                                Wybierz lek z listy po lewej.
-                            </div>
+                            <!-- jeśli jest wybrany (selected lub pierwszy) -->
+                            <div class="meds-right__body" th:if="${sel != null}">
 
-                            <!-- jeśli jest wybrany -->
-                            <div class="meds-right__body" th:if="${selected != null}">
-
-                                <h3 class="meds-right__title" th:text="${selected.name}">Nazwa leku</h3>
+                                <h3 class="meds-right__title" th:text="${sel.name}">Nazwa leku</h3>
 
                                 <form id="medForm" class="meds-form" method="post" th:action="@{/medications/save}">
                                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                                    <input type="hidden" name="id" th:value="${selected.id}"/>
+                                    <input type="hidden" name="id" th:value="${sel.id}"/>
 
                                     <!-- VIEW -->
                                     <div class="meds-view">
                                         <div class="meds-box">
                                             <div class="meds-box__label">Dawka</div>
                                             <div class="meds-box__value"
-                                                 th:text="${selected.dose != null ? selected.dose : '-'}">1 tabletka</div>
+                                                 th:text="${sel.dose != null ? sel.dose : '-'}">1 tabletka
+                                            </div>
                                         </div>
 
                                         <div class="meds-box">
                                             <div class="meds-box__label">Godzina<br/>przyjęcia</div>
                                             <div class="meds-box__value"
-                                                 th:text="${selected.intakeTime != null ? #temporals.format(selected.intakeTime, 'HH:mm') : '--:--'}">
+                                                 th:text="${sel.intakeTime != null ? #temporals.format(sel.intakeTime, 'HH:mm') : '--:--'}">
                                                 15:00
                                             </div>
                                         </div>
@@ -145,39 +140,39 @@
                                         <div class="meds-edit__row">
                                             <label class="meds-edit__label">Nazwa leku:</label>
                                             <input class="meds-edit__input" type="text" name="name"
-                                                   th:value="${selected.name}" data-editable="1">
+                                                   th:value="${sel.name}" data-editable="1">
                                         </div>
 
                                         <div class="meds-edit__row">
                                             <label class="meds-edit__label">Przyjmowana dawka:</label>
                                             <input class="meds-edit__input" type="text" name="dose"
-                                                   th:value="${selected.dose}" data-editable="1">
+                                                   th:value="${sel.dose}" data-editable="1">
                                         </div>
 
                                         <div class="meds-edit__row">
                                             <label class="meds-edit__label">Godzina przyjęcia:</label>
                                             <input class="meds-edit__input" type="time" name="intakeTime"
-                                                   th:value="${selected.intakeTime != null ? #temporals.format(selected.intakeTime, 'HH:mm') : ''}"
+                                                   th:value="${sel.intakeTime != null ? #temporals.format(sel.intakeTime, 'HH:mm') : ''}"
                                                    data-editable="1">
                                         </div>
                                     </div>
 
-                                    <!-- meta (ZAMIENNIKI bez pól z encji, żeby nie wywalało) -->
+                                    <!-- META -->
                                     <div class="meds-meta">
                                         <div class="meds-meta__row">
                                             <span class="meds-meta__label">Status:</span>
-                                            <span class="meds-meta__value" th:text="${selected.status}">SCHEDULED</span>
+                                            <span class="meds-meta__value" th:text="${sel.status}">SCHEDULED</span>
                                         </div>
 
                                         <div class="meds-meta__row">
-                                            <span class="meds-meta__label">Źródło:</span>
+                                            <span class="meds-meta__label">Przedmiot modyfikujący:</span>
                                             <span class="meds-meta__value"
-                                                  th:text="${selected.createdByDoctor ? 'Lekarz' : 'Pacjent'}">Lekarz</span>
+                                                  th:text="${sel.createdByDoctor ? 'Lekarz' : 'Pacjent'}">Lekarz</span>
                                         </div>
                                     </div>
 
-                                    <!-- jeśli brak uprawnień do edycji -->
-                                    <div class="meds-warning" th:if="${!canEditSelected}">
+                                    <!-- WARNING jeśli brak uprawnień -->
+                                    <div class="meds-warning" th:if="${!canEditSel}">
                                         <span class="meds-warning__icon">❗</span>
                                         <span>Jako pacjent nie posiadasz uprawnień do edycji leku</span>
                                         <span class="meds-warning__icon">❗</span>
@@ -196,17 +191,17 @@
 
                                         <div class="meds-actions__right">
                                             <button id="editBtn" class="meds-btn meds-btn--soft" type="button"
-                                                    th:if="${canEditSelected}">
+                                                    th:if="${canEditSel}">
                                                 Edytuj
                                             </button>
                                         </div>
                                     </div>
 
-                                    <input type="hidden" id="canEditSelected" th:value="${canEditSelected}"/>
+                                    <!-- to czy można edytować (dla JS) -->
+                                    <input type="hidden" id="canEditSelected" th:value="${canEditSel}"/>
                                 </form>
 
                             </div>
-
                         </section>
 
                     </div>
