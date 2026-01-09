@@ -4,18 +4,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Service
-@RequiredArgsConstructor
 public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    public void sendMedicationReminder(String toEmail, String subject, String text) {
+    public EmailService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
+
+    public void sendTestEmail() {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(toEmail);
-        message.setSubject(subject);
-        message.setText(text);
+        message.setFrom("medicalappemailtest@gmail.com");
+        message.setTo("medicalappemailtest@gmail.com");
+        message.setSubject("Testowanie, czy działa");
+        message.setText("Jeśli przyszło, to działa!");
 
         mailSender.send(message);
     }
