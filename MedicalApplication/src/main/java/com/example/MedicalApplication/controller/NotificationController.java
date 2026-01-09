@@ -4,33 +4,31 @@ import com.example.MedicalApplication.model.User;
 import com.example.MedicalApplication.service.EmailService;
 import com.example.MedicalApplication.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/notifications")
-@RequiredArgsConstructor
-public class NotificationController {
 
-    private final UserService userService;
-    private final EmailService emailService;
 
-    @PostMapping("/user/{userId}/test-email")
-    @ResponseStatus(HttpStatus.OK)
-    public String sendTestEmail(@PathVariable Long userId) {
-        User user = userService.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    @RestController
+    @RequiredArgsConstructor
+    public class NotificationController {
 
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new RuntimeException("User has no email set");
+        private final EmailService emailService;
+
+        @RequestMapping("/send-email")
+        public String sendEmail() {
+            try {
+                emailService.sendTestEmail();
+                return "Email sent successfully";
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "Error: " + e.getMessage();
+            }
         }
-
-        emailService.sendMedicationReminder(
-                user.getEmail(),
-                "Testowe powiadomienie o leku",
-                "Cześć " + user.getFullName() + ", to jest testowe powiadomienie o leku."
-        );
-
-        return "Notification email sent to " + user.getEmail();
     }
-}
+
+
+
