@@ -1,42 +1,30 @@
-/* =========================
-   MEDICATIONS (FIGMA PANEL)
-   ========================= */
+/* MEDICATIONS (FIGMA PANEL) */
 
-/* zostawiasz klasę z body */
-.no-scroll-body {
-    overflow: hidden;
-}
+.no-scroll-body { overflow: hidden; }
 
-/* tło jak figma (bardziej “jasne” od dołu) */
 .meds {
-    /*background: linear-gradient(180deg, rgba(83, 98, 158, .45) 0%, rgba(46, 36, 72, .92) 100%);*/
     background: linear-gradient(180deg, #53629E 0%, #D6F4ED 100%);
-    /* wysokość strony pod topbar */
     min-height: calc(100vh - var(--topbar-h));
     padding: 55px 0 35px;
 }
 
-/* wrapper (tylko do centrowania panelu) */
-.meds-shell {
-    width: 100%;
-}
+.meds-shell { width: 100%; }
 
-/* zewnętrzny biały panel (jak w figmie: 1396x812, radius 10) */
 .meds-panel {
     width: min(1396px, calc(100% - 38px));
     margin: 0 auto;
     height: calc(100vh - var(--topbar-h) - var(--meds-vpad));
+    filter: drop-shadow(0 18px 36px rgba(0,0,0,.18));
 }
 
-/* stała wysokość panelu zależna od okna */
 .meds-panel__inner {
     height: 100%;
     background: #473472;
     border-radius: 10px;
     overflow: hidden;
+    border: 1px solid rgba(255,255,255,.12);
 }
 
-/* siatka 2 kolumny jak figma: lewy 465px */
 .meds-grid {
     height: 100%;
     min-height: 0;
@@ -44,22 +32,16 @@
     grid-template-columns: 465px 1fr;
 }
 
-/* =========================
-   LEFT (purple list)
-   ========================= */
+/* LEFT */
 .meds-left {
     background: #473472;
     display: grid;
     grid-template-rows: auto 1fr auto;
     height: 100%;
     min-height: 0;
+    border-right: 1px solid rgba(255,255,255,.14);
 }
 
-.meds-left__top{
-    flex: 0 0 auto;
-}
-
-/* biała belka “Wybierz lek…” */
 .meds-left__select {
     padding: 14px 18px;
     font-size: 2rem;
@@ -69,72 +51,44 @@
     text-align: center;
 }
 
-/* lista scrollowana (stała wysokość panelu) */
 .meds-list {
     overflow-y: auto;
     overflow-x: hidden;
     min-height: 0;
     height: 100%;
-    padding: 18px 0 18px 16px;
+    padding: 14px 0 14px 12px;
     margin: 0;
     background: #533D85;
 }
 
-.meds-left__bottom{
-    margin: 0;
-    padding: 0;
-}
-
-.meds-list::-webkit-scrollbar {
-    width: 5px;
-}
-
+.meds-list::-webkit-scrollbar { width: 5px; }
 .meds-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, .22);
+    background: rgba(255,255,255,.22);
     border-radius: 999px;
 }
+.meds-list::-webkit-scrollbar-track { background: transparent; }
 
-.meds-list::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-/* element listy – w figmie to bardziej “tekst + kropka” */
 .meds-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /*gap: 16px;*/
     text-decoration: none;
-    padding: 15px 16px;
     color: #fff;
+
+    border-radius: 10px;
+    margin: 6px 12px 6px 4px;
+    padding: 12px 14px;
+    transition: background .15s ease, transform .15s ease;
 }
 
-/* aktywny – biała “wstawka” tylko z lewej strony (rounded left) */
+.meds-item:hover {
+    background: rgba(255,255,255,.06);
+    transform: translateX(2px);
+}
+
 .meds-item--active {
     background: #fff;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-    padding: 18px 16px;
-    margin: 0 0 0 0;
-}
-
-/* nazwy leków jak figma: Helvetica 40 */
-.meds-item__name {
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 40px;
-    font-weight: 400;
-    line-height: 1.1;
-    color: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-    min-width: 0;
-}
-
-/* aktywny tekst w fiolet */
-.meds-item--active .meds-item__name {
-    color: #473472;
+    box-shadow: 0 10px 22px rgba(0,0,0,.18);
 }
 
 .meds-item__left {
@@ -144,43 +98,45 @@
     min-width: 0;
 }
 
-/* kłódka */
+.meds-item__name {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: clamp(18px, 1.8vw, 26px);
+    font-weight: 600;
+    letter-spacing: .2px;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.meds-item--active .meds-item__name { color: #473472; }
+
 .meds-item__lock {
-    font-size: 22px;
+    font-size: 18px;
     line-height: 1;
-    color: #000;
+    color: #111;
 }
 
-/* kropki statusu jak figma: 39x37, pełne koło */
 .meds-dot {
-    width: 39px;
-    height: 37px;
-    border-radius: 9999px;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
     flex: 0 0 auto;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,.18);
 }
 
-.meds-dot--green {
-    background: #1BC768;
-}
+.meds-dot--green { background: #1BC768; }
+.meds-dot--red   { background: #C71B1B; }
+.meds-dot--blue  { background: #2A79FF; }
 
-.meds-dot--red {
-    background: #C71B1B;
-}
-
-.meds-dot--blue {
-    background: #2A79FF;
-}
-
-/* przycisk Dodaj – w figmie był “prostokąt” na dole */
-.meds-left__bottom {
-    margin-top: 0;
-}
+.meds-left__bottom { margin: 0; padding: 0; }
 
 .meds-left__add {
     width: 100%;
-    height: clamp(56px, 10vw, 84px);;
+    height: clamp(56px, 10vw, 84px);
     border: 0;
-    -moz-border-radius-bottomleft: 7px;
     background: #392B58;
     color: #fff;
     font-weight: 700;
@@ -188,67 +144,73 @@
     cursor: pointer;
     text-align: center;
     white-space: nowrap;
+    border-top: 1px solid rgba(255,255,255,.14);
+    transition: filter .12s ease;
 }
+.meds-left__add:hover { filter: brightness(1.05); }
 
-/* =========================
-   RIGHT (content)
-   ========================= */
-
+/* RIGHT (default = pacjent widzi białe) */
 .meds-right {
     background: #fff;
     height: 100%;
     min-height: 0;
     display: flex;
     flex-direction: column;
-    /*grid-template-rows: 1fr auto;*/
     gap: 18px;
-    /*position: relative;*/
     padding: 24px 32px;
+    border-left: 1px solid rgba(0,0,0,.10);
 }
 
-.meds-right__body{
+.meds-right__header{
+    display: none;
+}
+
+/* title */
+.meds-right__title {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: clamp(32px, 2.6vw, 48px);
+    font-weight: 800;
+    letter-spacing: .2px;
+    color: #473472;
+    margin: 0;
+}
+
+.meds-empty {
+    margin-top: 40px;
+    font-size: 20px;
+    color: rgba(0,0,0,.7);
+    text-align: center;
+}
+
+.meds-empty--left{
+    color: rgba(255,255,255,.85);
+    margin-top: 10px;
+}
+
+.meds-right__body {
     min-height: 0;
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
-    /*grid-template-rows: auto 1fr;*/
-    gap: 18px;
-    overflow: visible;
+    gap: 16px;
 }
 
-/* tytuł leku (Helvetica 60) */
-.meds-right__title {
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 60px;
-    font-weight: 700;
-    color: #473472;
-}
-
-/* puste info */
-.meds-empty {
-    margin-top: 40px;
-    font-size: 22px;
-    color: rgba(0, 0, 0, .7);
-    text-align: center;
-}
-
-/* VIEW boxes: 797px, border 4px purple, radius 10 */
 .meds-view {
-    margin-top: 56px;
+    margin-top: 26px;
     display: grid;
-    gap: 18px;
-    width: min(797px, 100%);
-    min-height: 0;
+    gap: 14px;
+    width: min(900px, 100%);
 }
 
 .meds-box {
-    /*background: #1BC768;*/
-    border: 4px solid #473472;
+    border: 3px solid #473472;
     border-radius: 10px;
     display: grid;
     grid-template-columns: 360px 1fr;
     min-height: 90px;
     overflow: hidden;
+    background: #fff;
+    box-shadow: 0 10px 22px rgba(0,0,0,.08);
 }
 
 .meds-box__label,
@@ -256,21 +218,14 @@
     display: grid;
     place-items: center;
     text-align: center;
-    padding: 18px 14px;
-
+    padding: 14px 12px;
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 36px;
-    font-weight: 700;
+    font-size: clamp(18px, 1.7vw, 28px);
+    font-weight: 800;
     color: #473472;
 }
 
-/* EDIT – niech wygląda jak Twoja wersja “formularzowa”, ale spójna */
-.meds-edit {
-    display: none;
-    margin-top: 28px;
-    width: min(900px, 100%);
-}
-
+.meds-edit { display: none; margin-top: 10px; width: min(900px, 100%); }
 .meds-edit__row {
     display: grid;
     grid-template-columns: 320px 1fr;
@@ -280,225 +235,288 @@
 }
 
 .meds-edit__label {
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 18px;
+    font-weight: 800;
     color: #473472;
 }
 
 .meds-edit__input {
     width: 100%;
-    height: 56px;
-    border: 0;
+    height: 54px;
     outline: none;
-    background: #e6e6e6;
-    border-radius: 6px;
+    background: #f0f0f3;
+    border-radius: 8px;
     padding: 0 14px;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     color: #473472;
+    border: 1px solid rgba(0,0,0,.10);
+    transition: box-shadow .15s ease, border-color .15s ease;
+}
+.meds-edit__input:focus{
+    border-color: rgba(71,52,114,.45);
+    box-shadow: 0 0 0 4px rgba(71,52,114,.12);
 }
 
-/* META (30px fiolet) */
 .meds-meta {
-    margin-top: 16px;
-    margin-bottom: 0;
+    margin-top: 4px;
     display: grid;
-    gap: 16px;
-    color: #473472;
-    font-size: 30px;
-    font-weight: 500;
+    gap: 10px;
     width: min(900px, 100%);
-    min-height: 0;
+    font-size: clamp(16px, 1.4vw, 22px);
+    font-weight: 600;
+    color: #473472;
 }
 
 .meds-meta__row {
     display: grid;
-    grid-template-columns: 420px 1fr;
+    grid-template-columns: 140px 1fr;
     align-items: center;
+    gap: 14px;
 }
 
-.meds-meta__label {
-    text-align: left;
-}
-
-.meds-meta__value {
-    text-align: left;
-}
-
-/* WARNING (drugi screen: banner na dole, biały środek, tło #615876) */
 .meds-warning {
     position: relative;
     width: min(900px, 100%);
-    padding: 16px 18px;
+    padding: 14px 18px;
     background: #615876;
-    border-radius: 5px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 14px;
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 700;
     color: #000;
     text-align: center;
-    left: auto;
-    right: auto;
-    bottom: auto;
-    margin: auto auto 12px;
+    margin-top: 10px;
 }
 
 .meds-warning::before {
     content: "";
     position: absolute;
-    inset: 7px;
+    inset: 8px;
     background: #fff;
-    border-radius: 5px;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, .25);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,.20);
     z-index: 0;
 }
+.meds-warning > * { position: relative; z-index: 1; }
+.meds-warning__icon { color: #C71B1B; font-weight: 900; }
 
-.meds-warning > * {
-    position: relative;
-    z-index: 1;
-}
-
-.meds-warning__icon {
-    color: #C71B1B;
-    font-weight: 900;
-    /*font-size: 26px;*/
-    /*margin: 0 12px;*/
-}
-
-/* ACTIONS (przyciski na dole jak figma) */
 .meds-actions {
-    position: relative;
-    left: auto;
-    right: auto;
-    bottom: auto;
     margin-top: auto;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between; /* ✅ jak w screenie */
     gap: 18px;
-    padding-top: 10px;
+    padding-top: 12px;
     width: min(900px, 100%);
 }
 
-/* jeśli jest warning, chowamy actions (żeby się nie nakładało) */
 .meds-warning + .meds-actions,
-.meds-warning ~ .meds-actions {
-    display: none;
-}
+.meds-warning ~ .meds-actions { display: none; }
 
 .meds-actions__left,
-.meds-actions__right {
-    display: flex;
-    gap: 18px;
-    /*align-items: center;*/
-}
+.meds-actions__right { display: flex; gap: 18px; }
 
 .meds-btn {
-    width: 167px;
-    height: 60px;
+    width: 150px;
+    height: 52px;
     background: #7E7495;
-    border: 4px solid #7E7495;
-    border-radius: 7px;
+    border: 0;
+    border-radius: 8px;
     color: #fff;
-    font-size: 30px;
-    font-weight: 500;
+    font-size: 20px;
+    font-weight: 800;
     cursor: pointer;
+    transition: transform .12s ease, filter .12s ease;
 }
+.meds-btn:hover { filter: brightness(.98); transform: translateY(-1px); }
 
-/* zachowujemy Twoje klasy (nie komplikuję) */
-.meds-btn--ghost {
-}
-
-.meds-btn--primary {
-}
-
-.meds-btn--soft {
-}
-
-.meds-form{
+.meds-form {
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
     min-height: 0;
-    overflow: auto;         /* jeśli ekran niski -> scroll TYLKO w prawym panelu */
-    padding-right: 6px;     /* żeby scrollbar nie nachodził */
+    overflow: auto;
+    padding-right: 6px;
 }
 
-/* toggle edycji */
-.meds-form.is-editing .meds-view {
+.meds-form.is-editing .meds-view { display: none; }
+.meds-form.is-editing .meds-edit { display: block; }
+
+/*  DOCTOR MODE  */
+.meds.meds--doctor{
+    background: linear-gradient(180deg, rgba(83,98,158,.45) 0%, rgba(46,36,72,.92) 100%);
+}
+
+.meds--doctor .meds-right{
+    background: #473472;
+    border-left: none;
+    color: #fff;
+}
+
+.meds--doctor .meds-right__header{
+    display: grid;
+    gap: 10px;
+    justify-items: center;
+    margin-bottom: 10px;
+}
+
+.meds-back{
+    justify-self: start;
+    width: 100%;
+    color: rgba(255,255,255,.9);
+    text-decoration: none;
+    font-weight: 800;
+}
+.meds-back:hover{ text-decoration: underline; }
+
+.meds-patient{
+    color: #fff;
+    font-weight: 900;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.meds--doctor .meds-right__title{
+    color: #fff;
+}
+
+.meds--doctor .meds-meta{
+    color: rgba(255,255,255,.92);
+}
+
+.meds--doctor .meds-empty{
+    color: rgba(255,255,255,.85);
+}
+
+/* w doctor-mode labelki w edycji też na biało */
+.meds--doctor .meds-edit__label{
+    color: rgba(255,255,255,.92);
+}
+
+/* MODAL */
+.meds-modal{
+    position: fixed;
+    inset: 0;
     display: none;
+    z-index: 9999;
+    place-items: center;
+}
+.meds-modal.is-open{ display: grid; }
+
+.meds-modal__overlay{
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.50);
+    backdrop-filter: blur(3px);
 }
 
-.meds-form.is-editing .meds-edit {
-    display: block;
+.meds-modal__dialog{
+    position: relative;
+    width: min(520px, calc(100% - 32px));
+    background: #473472;
+    border-radius: 14px;
+    box-shadow: 0 16px 50px rgba(0,0,0,.35);
+    padding: 22px 22px 18px;
+    color: #fff;
+    z-index: 1;
+    border: 1px solid rgba(255,255,255,.18);
+    transform: translateY(8px);
+    animation: medsModalIn .14s ease-out forwards;
+}
+@keyframes medsModalIn{ to { transform: translateY(0); } }
+
+.meds-modal__close{
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 10px;
+    background: rgba(255,255,255,.12);
+    color: #fff;
+    font-size: 26px;
+    cursor: pointer;
+}
+.meds-modal__close:hover{ background: rgba(255,255,255,.18); }
+
+.meds-modal__title{
+    margin: 6px 0 18px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 30px;
+    font-weight: 900;
+    text-align: center;
 }
 
-/* =========================
-   Responsive (tylko awaryjnie)
-   ========================= */
-@media (max-width: 820px) {
-    .meds-panel__inner {
-        height: auto;
-        min-height: 740px;
-    }
+.meds-modal__form{ display: grid; gap: 14px; }
+.meds-modal__row{ display: grid; gap: 6px; text-align: left; }
 
-    .meds-right {
-        padding: 16px 32px;
-        gap: 12px;
-    }
-
-    .meds-right__title {
-        margin: 0;
-    }
-
-    .meds-view {
-        margin-top: 18px;
-        gap: 12px;
-    }
-
-    .meds-meta {
-        margin-top: 16px;
-        gap: 10px;
-    }
-
-    .meds-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .meds-left {
-        grid-template-rows: auto auto auto;
-    }
-
-    .meds-warning,
-    .meds-actions {
-        position: static;
-        margin-top: 28px;
-    }
+.meds-modal__label{
+    font-size: 16px;
+    font-weight: 800;
+    color: rgba(255,255,255,.92);
 }
 
-@media (max-height: 720px){
-    .meds-right__title{ font-size: 46px; }
-    .meds-box__label,
-    .meds-box__value{ font-size: 28px; padding: 12px 12px; }
-
-    .meds-meta{ font-size: 22px; }
-    .meds-btn{ height: 52px; font-size: 24px; }
-    .meds-view{ margin-top: 18px; }
+.meds-modal__input{
+    height: 48px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,.2);
+    background: rgba(255,255,255,.10);
+    color: #fff;
+    padding: 0 12px;
+    outline: none;
+    font-size: 16px;
+    font-weight: 700;
+}
+.meds-modal__input:focus{
+    border-color: rgba(255,255,255,.5);
+    box-shadow: 0 0 0 4px rgba(255,255,255,.12);
 }
 
-@media (max-height: 620px){
-    .meds-view{ margin-top: 10px; }
+.meds-modal__actions{
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
 }
+
+.meds-modal__btn{
+    flex: 1;
+    height: 48px;
+    border-radius: 10px;
+    border: 0;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.meds-modal__btn--primary{
+    background: #fff;
+    color: #473472;
+}
+.meds-modal__btn--primary:hover{ filter: brightness(.95); }
+
+.meds-modal__btn--ghost{
+    background: rgba(255,255,255,.14);
+    color: #fff;
+}
+.meds-modal__btn--ghost:hover{ background: rgba(255,255,255,.18); }
 
 :root {
     --topbar-h: 129px;
-    --meds-vpad: 60px; /* padding górny+dolny w .meds (np. 35 + 25) */
+    --meds-vpad: 60px;
 }
 
 .meds__container {
     height: calc(100vh - var(--topbar-h));
     display: flex;
+}
+
+/* Responsive */
+@media (max-width: 820px) {
+    .meds-panel__inner { height: auto; min-height: 740px; }
+    .meds-grid { grid-template-columns: 1fr; }
 }

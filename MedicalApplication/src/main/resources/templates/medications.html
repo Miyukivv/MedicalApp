@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Aplikacja medyczna - zarządzanie lekami</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/medications.css}">
 </head>
 
 <body class="no-scroll-body">
@@ -23,7 +24,7 @@
         <nav class="nav">
             <a class="nav__link" th:href="@{/home}">Strona główna</a>
             <a class="nav__link" th:href="@{/profile}">Profil</a>
-            <a class="nav__link" href="#">Status &amp; przegląd</a>
+            <a class="nav__link" th:href="@{/status}">Status &amp; przegląd</a>
             <a class="nav__link nav__link--active" th:href="@{/medications}">Zarządzanie lekami</a>
             <a class="nav__link" href="#">Zamienniki</a>
             <a class="nav__link" th:href="@{/doctor}" sec:authorize="hasRole('DOCTOR')">Dla lekarza</a>
@@ -48,18 +49,15 @@
     </div>
 </header>
 
-<main class="meds">
+<main class="meds" th:classappend="${targetPatientId != null} ? ' meds--doctor' : ''">
     <div class="container meds__container">
-
         <div class="meds-shell">
             <section class="meds-panel">
                 <div class="meds-panel__inner">
 
-                    <!-- sel: selected albo pierwszy z listy, albo null -->
-                    <!-- canEditSel: edycja możliwa jeśli lek NIE jest od lekarza -->
                     <div class="meds-grid"
                          th:with="sel=${selected != null ? selected : (!#lists.isEmpty(medications) ? medications[0] : null)},
-                                  canEditSel=${sel != null and !sel.createdByDoctor}">
+                                  canEditSel=${sel != null and (canEditSelected == true)}">
 
                         <!-- LEWA KOLUMNA -->
                         <aside class="meds-left">
@@ -69,22 +67,25 @@
 
                             <div class="meds-list" id="medList">
 
-                                <div class="meds-empty" th:if="${sel == null}">
+                                <div class="meds-empty meds-empty--left" th:if="${sel == null}">
                                     Brak leków do wyświetlenia.
                                 </div>
 
                                 <a class="meds-item"
                                    th:each="m : ${medications}"
-                                   th:href="@{/medications(id=${m.id})}"
+                                   th:href="${targetPatientId != null}
+                                            ? @{/medications(id=${m.id}, patientId=${targetPatientId})}
+                                            : @{/medications(id=${m.id})}"
                                    th:classappend="${sel != null and sel.id == m.id} ? ' meds-item--active' : ''">
 
                                     <div class="meds-item__left">
                                         <span class="meds-item__name" th:text="${m.name}">nazwa leku</span>
 
+                                        <!--  klodka jeśli aktualny user NIE może edytować tego leku -->
                                         <span class="meds-item__lock"
-                                              th:if="${m.createdByDoctor}"
-                                              aria-label="Lek zablokowany"
-                                              title="Lek od lekarza">🔒</span>
+                                              th:if="${editableMedicationIds != null and !editableMedicationIds.contains(m.id)}"
+                                              aria-label="Zablokowane"
+                                              title="Nie masz uprawnień do edycji">🔒</span>
                                     </div>
 
                                     <span class="meds-dot"
@@ -94,36 +95,47 @@
                                 </a>
                             </div>
 
-                            <form th:action="@{/medications/new}" method="post" class="meds-left__bottom">
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                                <button class="meds-left__add" type="submit">Dodaj nowy lek</button>
-                            </form>
+                            <!-- DODAJ LEK (self albo pacjentowi) -->
+                            <div class="meds-left__bottom">
+                                <button id="openAddMedModal" class="meds-left__add" type="button"
+                                        th:text="${targetPatientId != null} ? 'Dodaj lek pacjentowi' : 'Dodaj nowy lek'">
+                                    Dodaj nowy lek
+                                </button>
+                            </div>
                         </aside>
 
                         <!-- PRAWA KOLUMNA -->
                         <section class="meds-right">
 
-                            <!-- jeśli brak leków -->
+                            <!-- nagłówek tylko w widoku pacjenta -->
+                            <div class="meds-right__header" th:if="${targetPatientId != null}">
+                                <a class="meds-back" th:href="@{/doctor}">← Powrót do pacjentów</a>
+                                <div class="meds-patient">
+                                    Pacjent: <span th:text="${userFullName}">Jan Kowalski</span>
+                                </div>
+                            </div>
+
                             <div class="meds-empty" th:if="${sel == null}">
                                 Brak leków do wyświetlenia.
                             </div>
 
-                            <!-- jeśli jest wybrany (selected lub pierwszy) -->
                             <div class="meds-right__body" th:if="${sel != null}">
-
                                 <h3 class="meds-right__title" th:text="${sel.name}">Nazwa leku</h3>
 
                                 <form id="medForm" class="meds-form" method="post" th:action="@{/medications/save}">
                                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                                     <input type="hidden" name="id" th:value="${sel.id}"/>
 
+                                    <input type="hidden" name="patientId"
+                                           th:if="${targetPatientId != null}"
+                                           th:value="${targetPatientId}"/>
+
                                     <!-- VIEW -->
                                     <div class="meds-view">
                                         <div class="meds-box">
                                             <div class="meds-box__label">Dawka</div>
                                             <div class="meds-box__value"
-                                                 th:text="${sel.dose != null ? sel.dose : '-'}">1 tabletka
-                                            </div>
+                                                 th:text="${sel.dose != null ? sel.dose : '-'}">1 tabletka</div>
                                         </div>
 
                                         <div class="meds-box">
@@ -165,16 +177,16 @@
                                         </div>
 
                                         <div class="meds-meta__row">
-                                            <span class="meds-meta__label">Przedmiot modyfikujący:</span>
+                                            <span class="meds-meta__label">Źródło:</span>
                                             <span class="meds-meta__value"
-                                                  th:text="${sel.createdByDoctor ? 'Lekarz' : 'Pacjent'}">Lekarz</span>
+                                                  th:text="${sel.createdByDoctor ? 'Lekarz' : 'Pacjent'}">Pacjent</span>
                                         </div>
                                     </div>
 
-                                    <!-- WARNING jeśli brak uprawnień -->
+                                    <!-- WARNING -->
                                     <div class="meds-warning" th:if="${!canEditSel}">
                                         <span class="meds-warning__icon">❗</span>
-                                        <span>Jako pacjent nie posiadasz uprawnień do edycji leku</span>
+                                        <span>Brak uprawnień do edycji tego leku</span>
                                         <span class="meds-warning__icon">❗</span>
                                     </div>
 
@@ -197,10 +209,8 @@
                                         </div>
                                     </div>
 
-                                    <!-- to czy można edytować (dla JS) -->
                                     <input type="hidden" id="canEditSelected" th:value="${canEditSel}"/>
                                 </form>
-
                             </div>
                         </section>
 
@@ -208,42 +218,115 @@
                 </div>
             </section>
         </div>
-
     </div>
 </main>
 
+<!-- MODAL: Dodaj lek -->
+<div id="addMedModal" class="meds-modal" aria-hidden="true">
+    <div class="meds-modal__overlay" data-close></div>
+    <div class="meds-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="addMedTitle">
+        <button class="meds-modal__close" type="button" data-close aria-label="Zamknij">&times;</button>
+
+        <h2 id="addMedTitle" class="meds-modal__title"
+            th:text="${targetPatientId != null} ? 'Dodaj lek pacjentowi' : 'Dodaj nowy lek'">
+            Dodaj nowy lek
+        </h2>
+
+        <form id="addMedForm" class="meds-modal__form"
+              th:action="${targetPatientId != null}
+                         ? @{/doctor/patients/{pid}/medications/new(pid=${targetPatientId})}
+                         : @{/medications/new}"
+              method="post">
+
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <!-- (dla /medications/new) -->
+            <input type="hidden" name="returnToId"
+                   th:if="${selected != null}"
+                   th:value="${selected.id}"/>
+
+            <div class="meds-modal__row">
+                <label class="meds-modal__label" for="newMedName">Nazwa leku</label>
+                <input class="meds-modal__input" id="newMedName" name="name" type="text" required>
+            </div>
+
+            <div class="meds-modal__row">
+                <label class="meds-modal__label" for="newMedDose">Dawka</label>
+                <input class="meds-modal__input" id="newMedDose" name="dose" type="text" required>
+            </div>
+
+            <div class="meds-modal__row">
+                <label class="meds-modal__label" for="newMedTime">Godzina przyjęcia</label>
+                <input class="meds-modal__input" id="newMedTime" name="intakeTime" type="time">
+            </div>
+        </form>
+
+        <div class="meds-modal__actions">
+            <button class="meds-modal__btn meds-modal__btn--ghost" type="button" data-close>Anuluj</button>
+            <button class="meds-modal__btn meds-modal__btn--primary" type="submit" form="addMedForm"
+                    th:text="${targetPatientId != null} ? 'Dodaj pacjentowi' : 'Dodaj'">
+                Dodaj
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
     (() => {
+        // edycja
         const form = document.getElementById('medForm');
-        if (!form) return;
+        if (form) {
+            const canEdit = (document.getElementById('canEditSelected')?.value === 'true');
+            const editBtn = document.getElementById('editBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const fields = [...form.querySelectorAll('[data-editable="1"]')];
+            const initial = new Map(fields.map(el => [el.name, el.value]));
 
-        const canEdit = (document.getElementById('canEditSelected')?.value === 'true');
+            function setEditing(on) {
+                form.classList.toggle('is-editing', on);
+                fields.forEach(el => el.disabled = !on);
+                if (editBtn) editBtn.hidden = on;
+                if (cancelBtn) cancelBtn.hidden = !on;
+                if (saveBtn) saveBtn.hidden = !on;
+            }
 
-        const editBtn = document.getElementById('editBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const saveBtn = document.getElementById('saveBtn');
+            fields.forEach(el => el.disabled = true);
 
-        const fields = [...form.querySelectorAll('[data-editable="1"]')];
-        const initial = new Map(fields.map(el => [el.name, el.value]));
-
-        function setEditing(on) {
-            form.classList.toggle('is-editing', on);
-            fields.forEach(el => el.disabled = !on);
-
-            if (editBtn) editBtn.hidden = on;
-            cancelBtn.hidden = !on;
-            saveBtn.hidden = !on;
+            if (canEdit) {
+                setEditing(false);
+                editBtn?.addEventListener('click', () => setEditing(true));
+                cancelBtn?.addEventListener('click', () => {
+                    fields.forEach(el => el.value = initial.get(el.name) ?? '');
+                    setEditing(false);
+                });
+            }
         }
 
-        fields.forEach(el => el.disabled = true);
-        if (!canEdit) return;
+        // modal
+        const openBtn = document.getElementById('openAddMedModal');
+        const modal = document.getElementById('addMedModal');
+        if (!modal) return;
 
-        setEditing(false);
+        const closeTargets = modal.querySelectorAll('[data-close]');
+        const firstInput = modal.querySelector('input[name="name"]');
 
-        editBtn?.addEventListener('click', () => setEditing(true));
-        cancelBtn.addEventListener('click', () => {
-            fields.forEach(el => el.value = initial.get(el.name) ?? '');
-            setEditing(false);
+        function openModal() {
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+            firstInput?.focus();
+        }
+
+        function closeModal() {
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+            openBtn?.focus();
+        }
+
+        openBtn?.addEventListener('click', openModal);
+        closeTargets.forEach(el => el.addEventListener('click', closeModal));
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
         });
     })();
 </script>
