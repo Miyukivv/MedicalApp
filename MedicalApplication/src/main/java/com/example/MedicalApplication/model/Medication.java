@@ -1,5 +1,6 @@
 package com.example.MedicalApplication.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,7 +27,9 @@ public class Medication {
 
     private LocalTime intakeTime;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MedicationStatus status;
 
     @Column(nullable=false)
     private boolean createdByDoctor;
@@ -34,4 +37,9 @@ public class Medication {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
     private User patient;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_id")
+    private User doctor;
 }
