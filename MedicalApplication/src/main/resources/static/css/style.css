@@ -13,7 +13,7 @@
 @import url("./responsive.css");
 
 
-/* ===== tło opcjonalne (włączane klasą) ===== */
+/* ===== tło (włączane klasą) ===== */
 .page-bg {
   position: relative;
   min-height: 100vh;
