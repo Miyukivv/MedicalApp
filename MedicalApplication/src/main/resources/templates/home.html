@@ -71,7 +71,7 @@
                                 name="name"
                                 class="search__input"
                                 type="text"
-                                placeholder="znajdź lek na ból istnienia"
+                                placeholder="sprawdź czy lek istnieje"
                                 aria-label="Wyszukaj lek"
                                 aria-autocomplete="list"
                                 aria-controls="medicineSuggest"
@@ -82,7 +82,7 @@
                         <div id="medicineSuggest" class="search__suggest" role="listbox" aria-label="Sugestie leków"></div>
                     </div>
 
-                    <button class="search__btn" type="submit">Szukaj leku</button>
+                    <button class="search__btn" type="submit" disabled aria-disabled="true">Szukaj leku</button>
                 </form>
 
                 <script>
@@ -189,7 +189,8 @@
 
             <div class="hero__right">
                 <!-- Mr Bean / postać -->
-                <img class="hero__character" src="/img/doctor.jpg" alt="Postać (doctor)" />
+<!--                <img class="hero__character" src="/img/doctor.jpg" alt="Postać (doctor)" />-->
+                <img class="hero__character" src="/img/doktorki.svg" alt="doktorki" />
             </div>
         </div>
     </section>
