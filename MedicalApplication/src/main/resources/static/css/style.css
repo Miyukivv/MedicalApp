@@ -11,3 +11,50 @@
 @import url("./status.css");
 
 @import url("./responsive.css");
+
+
+/* ===== tło opcjonalne (włączane klasą) ===== */
+.page-bg {
+  position: relative;
+  min-height: 100vh;
+}
+
+.page-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("../img/apteka.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  z-index: -2;
+  pointer-events: none;
+}
+
+.page-bg::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(135, 186, 195, 0.90) 0%,
+    rgba(83, 98, 158, 0.70) 44%,
+    rgba(71, 52, 114, 0.60) 100%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+
+.overview-panel{
+  background: linear-gradient(
+    180deg,
+    rgba(71, 52, 114, 0.55) 0%,
+    rgba(71, 52, 114, 0.42) 55%,
+    rgba(214, 244, 237, 0.30) 100%
+  );
+  border: 1px solid rgba(255,255,255,0.30);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 20px 56px rgba(15,23,42,0.16);
+}

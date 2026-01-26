@@ -2,6 +2,15 @@
 
 .no-scroll-body { overflow: hidden; }
 
+body.page-bg .meds {
+    background: transparent;
+}
+
+opcjonalnie: jak chcesz lekki “mgiełkowy” podkład pod panelem:
+body.page-bg .meds {
+    background: rgba(83, 98, 158, .18);
+}
+
 .meds {
     background: linear-gradient(180deg, #53629E 0%, #D6F4ED 100%);
     min-height: calc(100vh - var(--topbar-h));
@@ -161,9 +170,7 @@
     border-left: 1px solid rgba(0,0,0,.10);
 }
 
-.meds-right__header{
-    display: none;
-}
+.meds-right__header{ display: none; }
 
 /* title */
 .meds-right__title {
@@ -308,7 +315,7 @@
     margin-top: auto;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* ✅ jak w screenie */
+    justify-content: space-between;
     gap: 18px;
     padding-top: 12px;
     width: min(900px, 100%);
@@ -348,7 +355,12 @@
 
 /*  DOCTOR MODE  */
 .meds.meds--doctor{
-    background: linear-gradient(180deg, rgba(83,98,158,.45) 0%, rgba(46,36,72,.92) 100%);
+    background: linear-gradient(180deg, rgba(83,98,158158,.45) 0%, rgba(46,36,72,.92) 100%);
+}
+
+/* jeśli page-bg, to też doctor-mode ma być transparent (żeby zdjęcie było widać) */
+body.page-bg .meds.meds--doctor {
+    background: transparent;
 }
 
 .meds--doctor .meds-right{
@@ -380,22 +392,10 @@
     text-align: center;
 }
 
-.meds--doctor .meds-right__title{
-    color: #fff;
-}
-
-.meds--doctor .meds-meta{
-    color: rgba(255,255,255,.92);
-}
-
-.meds--doctor .meds-empty{
-    color: rgba(255,255,255,.85);
-}
-
-/* w doctor-mode labelki w edycji też na biało */
-.meds--doctor .meds-edit__label{
-    color: rgba(255,255,255,.92);
-}
+.meds--doctor .meds-right__title{ color: #fff; }
+.meds--doctor .meds-meta{ color: rgba(255,255,255,.92); }
+.meds--doctor .meds-empty{ color: rgba(255,255,255,.85); }
+.meds--doctor .meds-edit__label{ color: rgba(255,255,255,.92); }
 
 /* MODAL */
 .meds-modal{
@@ -520,6 +520,7 @@
     .meds-panel__inner { height: auto; min-height: 740px; }
     .meds-grid { grid-template-columns: 1fr; }
 }
+
 /* logo */
 .brand__logo{
   height: 64px;
@@ -528,7 +529,6 @@
   display: block;
   object-fit: contain;
 }
-
 
 .brand__logo{
   height: 48px;
@@ -551,3 +551,120 @@
   flex-wrap: wrap;
   gap: 14px;
 }
+
+.meds-panel{
+  filter: drop-shadow(0 22px 55px rgba(0,0,0,.22));
+}
+
+.meds-panel__inner{
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 14px 40px rgba(0,0,0,.18);
+}
+
+.meds-left{
+  background: rgba(71,52,114,.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.meds-left__select{
+  padding: 18px 18px;
+  font-size: clamp(26px, 2.1vw, 34px);
+  letter-spacing: .2px;
+  text-shadow: 0 8px 24px rgba(0,0,0,.22);
+}
+
+.meds-list{
+  background: rgba(83,61,133,.65);
+  border-top: 1px solid rgba(255,255,255,.10);
+}
+
+.meds-item{
+  border-radius: 14px;
+  margin: 8px 14px 8px 6px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.meds-item:hover{
+  background: rgba(255,255,255,.07);
+  border-color: rgba(214,244,237,.22);
+  transform: translateX(3px);
+}
+
+.meds-item--active{
+  background: rgba(255,255,255,.96);
+  border-color: rgba(255,255,255,.85);
+  box-shadow: 0 14px 28px rgba(0,0,0,.18);
+}
+
+.meds-item--active .meds-item__name{
+  color: #3a2a5d;
+}
+
+.meds-dot{
+  width: 20px;
+  height: 20px;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.22), 0 8px 18px rgba(0,0,0,.12);
+}
+
+.meds-left__add{
+  background: rgba(57,43,88,.92);
+  border-top: 1px solid rgba(255,255,255,.16);
+  letter-spacing: .2px;
+}
+.meds-left__add:hover{
+  filter: brightness(1.07);
+}
+
+.meds-right{
+  border-left: 1px solid rgba(0,0,0,.08);
+  border-top-right-radius: 18px;
+  border-bottom-right-radius: 18px;
+  padding: 28px 38px;
+}
+
+.meds-right__title{
+  letter-spacing: .2px;
+  text-shadow: 0 10px 24px rgba(71,52,114,.08);
+}
+
+.meds-box{
+  border-width: 2px;
+  border-radius: 14px;
+  box-shadow: 0 18px 35px rgba(0,0,0,.10);
+}
+
+.meds-btn{
+  width: 170px;
+  border-radius: 12px;
+  box-shadow: 0 14px 28px rgba(0,0,0,.14);
+}
+.meds-btn:hover{
+  transform: translateY(-2px);
+}
+
+.meds-meta{
+  opacity: .95;
+}
+
+@media (max-width: 820px){
+  .meds-right{ padding: 22px 20px; }
+  .meds-panel__inner{ border-radius: 16px; }
+}
+
+.meds-meta{
+  margin-top: 14px;
+  gap: 12px;
+}
+
+.meds-warning{
+  margin-top: 16px;
+}
+
+.meds-right__body{
+  gap: 22px;
+}
+

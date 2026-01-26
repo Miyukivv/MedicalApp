@@ -9,7 +9,7 @@
     <link rel="stylesheet" th:href="@{/css/status.css}">
 </head>
 
-<body class="no-scroll-body">
+<body class="no-scroll-body page-bg">
 
 <header class="topbar">
     <div class="container topbar__inner">
@@ -17,9 +17,8 @@
             <img class="brand__logo" th:src="@{/img/logo.jpg}" alt="YourMed" />
         </a>
 
-
         <div class="topbar__greeting">
-            Witaj <span th:text="${welcomeName}">Imię</span>, zdrowego dnia!
+            Witaj <span th:text="${#strings.substringBefore(welcomeName, ' ')}">Imię</span>, zdrowego dnia!
         </div>
 
         <nav class="nav">

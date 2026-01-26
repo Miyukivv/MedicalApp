@@ -1,3 +1,11 @@
+body.page-bg .doc{
+    background: transparent;
+}
+
+body.page-bg .doc{
+    background: rgba(83, 98, 158, .18);
+}
+
 
 .doc{
     background: linear-gradient(180deg, #53629E 0%, #D6F4ED 100%);
@@ -316,6 +324,7 @@
 }
 .doc-modal__btn--ghost:hover{ background: rgba(255,255,255,.18); }
 .doc-modal__btn--primary:hover{ filter: brightness(.95); }
+
 /* logo */
 .brand__logo{
   height: 64px;
@@ -324,7 +333,6 @@
   display: block;
   object-fit: contain;
 }
-
 
 .brand__logo{
   height: 48px;
