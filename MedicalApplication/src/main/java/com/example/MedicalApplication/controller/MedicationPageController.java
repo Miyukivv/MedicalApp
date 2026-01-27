@@ -89,9 +89,24 @@ public class MedicationPageController {
 
     @PostMapping("/medications/delete")
     public String deleteMedication(Authentication auth,
-                                   @RequestParam Long medicationId) {
+                                   @RequestParam Long medicationId,
+                                   @RequestParam(required = false) Long patientId) {
         var user = userRepository.findByEmail(auth.getName()).orElseThrow();
-        medicationService.deleteMedicationIfPatientCreated(user.getId(), medicationId);
+        Medication med = medicationService.getMedicationById(medicationId);
+
+        if (!med.isCreatedByDoctor()) {
+            medicationService.deleteMedicationIfPatientCreated(user.getId(), medicationId);
+        } else {
+            if (!isDoctor(user.getRole())) {
+                return patientId != null ? "redirect:/medications?patientId=" + patientId : "redirect:/medications";
+            }
+            if (med.getDoctor() == null || !Objects.equals(med.getDoctor().getId(), user.getId())) {
+                return patientId != null ? "redirect:/medications?patientId=" + patientId : "redirect:/medications";
+            }
+            medicationService.deleteMedication(medicationId);
+        }
+
+        if (patientId != null) return "redirect:/medications?patientId=" + patientId;
         return "redirect:/medications";
     }
 
@@ -102,6 +117,9 @@ public class MedicationPageController {
             @RequestParam String name,
             @RequestParam String dose,
             @RequestParam(required = false) String intakeTime,
+            @RequestParam(required = false) LocalDate therapyStartDate,
+            @RequestParam(required = false) LocalDate therapyEndDate,
+            @RequestParam(required = false) Long patientId,
             @RequestParam(required = false) Long returnToId
     ) {
         var loggedUser = userRepository.findByEmail(authentication.getName()).orElseThrow();
@@ -110,10 +128,39 @@ public class MedicationPageController {
         String safeDose = (dose == null || dose.isBlank()) ? "1 tabletka" : dose.trim();
         LocalTime time = (intakeTime == null || intakeTime.isBlank()) ? null : LocalTime.parse(intakeTime);
 
+        boolean doctorAddingForPatient = (patientId != null);
+
+        if (doctorAddingForPatient) {
+            if (!isDoctor(loggedUser.getRole())) {
+                return "redirect:/medications";
+            }
+
+            var targetPatient = userRepository.findById(patientId).orElseThrow();
+
+            Medication m = Medication.builder()
+                    .name(safeName)
+                    .dose(safeDose)
+                    .intakeTime(time)
+                    .therapyStartDate(therapyStartDate)
+                    .therapyEndDate(therapyEndDate)
+                    .status(SCHEDULED)
+                    .createdByDoctor(true)
+                    .patient(targetPatient)
+                    .doctor(loggedUser)
+                    .build();
+
+            Medication saved = medicationService.addMedicationByDoctor(loggedUser, targetPatient, m);
+
+            Long backTo = (returnToId != null) ? returnToId : saved.getId();
+            return "redirect:/medications?patientId=" + patientId + "&id=" + backTo;
+        }
+
         Medication m = Medication.builder()
                 .name(safeName)
                 .dose(safeDose)
                 .intakeTime(time)
+                .therapyStartDate(therapyStartDate)
+                .therapyEndDate(therapyEndDate)
                 .status(SCHEDULED)
                 .createdByDoctor(false)
                 .patient(loggedUser)
@@ -125,6 +172,7 @@ public class MedicationPageController {
         Long backTo = (returnToId != null) ? returnToId : saved.getId();
         return "redirect:/medications?id=" + backTo;
     }
+
 
     @PostMapping("/medications/save")
     public String saveMedication(
