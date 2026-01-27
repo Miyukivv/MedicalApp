@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -33,6 +35,18 @@ public class Medication {
 
     @Column(nullable=false)
     private boolean createdByDoctor;
+
+    private LocalDate therapyStartDate;
+    private LocalDate therapyEndDate;
+
+
+    private LocalDate pendingDoseDate;
+    @Column(unique = true)
+    private String confirmationToken;
+
+    private LocalDateTime reminderEmailSentAt;
+    private LocalDateTime takenAt;
+    private LocalDateTime followUpSentAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
