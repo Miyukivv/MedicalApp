@@ -24,6 +24,7 @@ public class RegisterPageController {
     public String registerPage(Model model) {
         model.addAttribute("registerRequest", new RegisterRequest());
         model.addAttribute("roles", UserRole.values());
+       // System.out.println("test");
         return "register";
     }
 
