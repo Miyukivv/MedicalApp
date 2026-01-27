@@ -7,7 +7,6 @@ import com.example.MedicalApplication.model.UserRole;
 import com.example.MedicalApplication.repository.DoctorPatientRepository;
 import com.example.MedicalApplication.repository.UserRepository;
 import com.example.MedicalApplication.service.MedicationService;
-import com.example.MedicalApplication.service.ReminderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -29,7 +28,7 @@ public class DoctorPageController {
     private final UserRepository userRepository;
     private final DoctorPatientRepository doctorPatientRepository;
     private final MedicationService medicationService;
-    private final ReminderService reminderService;
+   // private final ReminderService reminderService;
     public record PatientRow(Long id, String fullName, String lastVisitDisplay, String lastVisitIso) {}
 
     @GetMapping("/doctor")
@@ -144,7 +143,7 @@ public class DoctorPageController {
 
         Medication saved = medicationService.addMedicationByDoctor(doctor, patient, m);
 
-        reminderService.createReminder(patient, saved, LocalDateTime.now(), 30, true);
+        //reminderService.createReminder(patient, saved, LocalDateTime.now(), 30, true);
 
         return "redirect:/medications?patientId=" + patientId + "&id=" + saved.getId();
     }
