@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -80,6 +81,20 @@ public class MedicationPageController {
         return "medications";
     }
 
+    @PostMapping("/medications/setEndDate")
+    public String setEndDate(@RequestParam Long medicationId, @RequestParam LocalDate endDate) {
+        medicationService.setEndDate(medicationId, endDate);
+        return "redirect:/medications";  // lub odpowiednia strona
+    }
+
+    @PostMapping("/medications/delete")
+    public String deleteMedication(Authentication auth,
+                                   @RequestParam Long medicationId) {
+        var user = userRepository.findByEmail(auth.getName()).orElseThrow();
+        medicationService.deleteMedicationIfPatientCreated(user.getId(), medicationId);
+        return "redirect:/medications";
+    }
+
 
     @PostMapping("/medications/new")
     public String addNewMedication(
@@ -118,6 +133,8 @@ public class MedicationPageController {
             @RequestParam String name,
             @RequestParam String dose,
             @RequestParam(required = false) String intakeTime,
+            @RequestParam(required = false) LocalDate therapyStartDate,
+            @RequestParam(required = false) LocalDate therapyEndDate,
             @RequestParam(required = false) Long patientId
     ) {
         var loggedUser = userRepository.findByEmail(authentication.getName()).orElseThrow();
@@ -126,6 +143,8 @@ public class MedicationPageController {
         update.setName(name);
         update.setDose(dose);
         update.setIntakeTime(intakeTime == null || intakeTime.isBlank() ? null : LocalTime.parse(intakeTime));
+        update.setTherapyStartDate(therapyStartDate); // Ustawiamy datę rozpoczęcia
+        update.setTherapyEndDate(therapyEndDate); // Ustawiamy datę zakończenia
 
         Medication current = medicationService.getMedicationById(id);
 
@@ -146,6 +165,7 @@ public class MedicationPageController {
         }
         return "redirect:/medications?id=" + id;
     }
+
 
     private boolean canEdit(com.example.MedicalApplication.model.User user, Medication med) {
         if (!med.isCreatedByDoctor()) {
