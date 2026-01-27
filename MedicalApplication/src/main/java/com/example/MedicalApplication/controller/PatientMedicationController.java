@@ -6,6 +6,8 @@ import com.example.MedicalApplication.service.MedicationService;
 import com.example.MedicalApplication.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,6 +44,20 @@ public class PatientMedicationController {
         return medicationService.markAsTaken(patient, medId);
     }
 
+    public ResponseEntity<?> deleteOwnMedication(@PathVariable Long patientId,
+                                                 @PathVariable Long medicationId) {
+        medicationService.deleteMedicationIfPatientCreated(patientId, medicationId);
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/medications/delete/{id}")
+    public String deleteMedication(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        // Sprawdzamy, czy pacjent może usunąć dany lek
+        medicationService.deleteMedicationIfPatientCreated(user.getId(), id);
+        return "redirect:/medications";  // Przekierowanie po usunięciu leku
+    }
+
+
+
     //pacjent aktualizuje TYLKO swoje własne leki (nie od lekarza)
     @PutMapping("/{patientId}/medications/{medId}")
     public Medication updateMedication(@PathVariable Long patientId,
@@ -52,3 +68,4 @@ public class PatientMedicationController {
         return medicationService.updateMedicationByPatient(patient, medId, update);
     }
 }
+
