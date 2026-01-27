@@ -1,4 +1,264 @@
-<!doctype html>
+<!--<!doctype html>-->
+<!--<html lang="pl"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+
+<!--<head>-->
+<!--    <meta charset="UTF-8"/>-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1"/>-->
+<!--    <title>Aplikacja medyczna - zarządzanie lekami pacjentów</title>-->
+<!--    <link rel="stylesheet" th:href="@{/css/style.css}">-->
+<!--    &lt;!&ndash; jeśli chcesz osobny css, dodaj np: &ndash;&gt;-->
+<!--    &lt;!&ndash; <link rel="stylesheet" th:href="@{/css/doctor-medications.css}"> &ndash;&gt;-->
+<!--</head>-->
+
+<!--<body class="doc-no-scroll-body page-bg">-->
+
+<!--<header class="topbar">-->
+<!--    <div class="container topbar__inner">-->
+<!--        <a class="brand" th:href="@{/home}">-->
+<!--            <img class="brand__logo" th:src="@{/img/logo.jpg}" alt="YourMed" />-->
+<!--        </a>-->
+
+<!--        <div class="topbar__greeting">-->
+<!--            Witaj <span th:text="${welcomeName}">Imię</span>, zdrowego dnia!-->
+<!--        </div>-->
+
+<!--        <nav class="nav">-->
+<!--            <a class="nav__link" th:href="@{/home}">Strona główna</a>-->
+<!--            <a class="nav__link" th:href="@{/profile}">Profil</a>-->
+<!--            <a class="nav__link" href="#">Status &amp; przegląd</a>-->
+<!--            <a class="nav__link nav__link&#45;&#45;active" th:href="@{/medications}">Zarządzanie lekami</a>-->
+<!--            <a class="nav__link" th:href="@{/doctor}" sec:authorize="hasRole('DOCTOR')">Dla lekarza</a>-->
+<!--        </nav>-->
+
+<!--        <div class="user-menu">-->
+<!--            <button class="user-menu__btn" type="button" aria-haspopup="true" aria-expanded="false">-->
+<!--                <span class="user-menu__label">Ustawienia</span>-->
+<!--                <span class="user-menu__icon" aria-hidden="true">⚙️</span>-->
+<!--            </button>-->
+
+<!--            <div class="user-menu__dropdown" role="menu" aria-label="Ustawienia konta">-->
+<!--                <form th:action="@{/logout}" method="post" class="user-menu__logout">-->
+<!--                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+<!--                    <button type="submit" class="user-menu__item user-menu__item&#45;&#45;danger user-menu__btnlink">-->
+<!--                        Wyloguj się-->
+<!--                    </button>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</header>-->
+
+<!--<main class="docmeds">-->
+<!--    <div class="container docmeds__container">-->
+
+<!--        <div class="docmeds-shell">-->
+<!--            <section class="docmeds-panel">-->
+<!--                <div class="docmeds-panel__inner">-->
+
+<!--                    <div class="docmeds-grid">-->
+
+<!--                        &lt;!&ndash; LEWA KOLUMNA &ndash;&gt;-->
+<!--                        <aside class="docmeds-left">-->
+<!--                            <div class="docmeds-left__top">-->
+<!--                                <div class="docmeds-left__select">Przyjmowane leki</div>-->
+<!--                            </div>-->
+
+<!--                            <div class="docmeds-list" id="docMedList">-->
+
+<!--                                &lt;!&ndash; opcjonalnie: komunikat gdy pusto &ndash;&gt;-->
+<!--                                <div class="docmeds-empty" th:if="${#lists.isEmpty(medications)}">-->
+<!--                                    Brak leków.-->
+<!--                                </div>-->
+
+<!--                                <a class="docmeds-item"-->
+<!--                                   th:each="m : ${medications}"-->
+<!--                                   th:href="@{/medications(id=${m.id})}"-->
+<!--                                   th:classappend="${selected != null and selected.id == m.id} ? ' docmeds-item&#45;&#45;active' : ''">-->
+
+<!--                                    <div class="docmeds-item__left">-->
+<!--                                        <span class="docmeds-item__name" th:text="${m.name}">nazwa leku</span>-->
+
+<!--                                        &lt;!&ndash; kłódka jeśli lek od lekarza (pacjent nie edytuje) &ndash;&gt;-->
+<!--                                        <span class="docmeds-item__lock"-->
+<!--                                              th:if="${m.createdByDoctor}"-->
+<!--                                              aria-label="Lek zablokowany"-->
+<!--                                              title="Lek od lekarza">🔒</span>-->
+<!--                                    </div>-->
+
+<!--                                    &lt;!&ndash; kropka statusu &ndash;&gt;-->
+<!--                                    <span class="docmeds-dot"-->
+<!--                                          th:classappend="${m.status == 'TAKEN'} ? ' docmeds-dot&#45;&#45;green' :-->
+<!--                                                         (${m.status == 'NOT_REQUIRED'} ? ' docmeds-dot&#45;&#45;blue' : ' docmeds-dot&#45;&#45;red')"-->
+<!--                                          aria-hidden="true"></span>-->
+<!--                                </a>-->
+<!--                            </div>-->
+
+<!--                            &lt;!&ndash; DODAJ NOWY LEK &ndash;&gt;-->
+<!--                            <form th:action="@{/medications/new}" method="post" class="docmeds-left__bottom">-->
+<!--                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+<!--                                <button class="docmeds-left__add" type="submit">Dodaj nowy lek</button>-->
+<!--                            </form>-->
+<!--                        </aside>-->
+
+<!--                        &lt;!&ndash; PRAWA KOLUMNA &ndash;&gt;-->
+<!--                        <section class="docmeds-right">-->
+
+<!--                            <div class="docmeds-right__header">-->
+<!--                                <div class="docmeds-right__patient">-->
+<!--                                    Pacjent: <span th:text="${userFullName}">Jan Kowalski</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+<!--                            &lt;!&ndash; jeśli nie ma wybranego &ndash;&gt;-->
+<!--                            <div class="docmeds-empty" th:if="${selected == null}">-->
+<!--                                Wybierz lek z listy po lewej.-->
+<!--                            </div>-->
+
+<!--                            &lt;!&ndash; jeśli jest wybrany &ndash;&gt;-->
+<!--                            <div class="docmeds-right__body" th:if="${selected != null}">-->
+
+<!--                                <h3 class="docmeds-right__title" th:text="${selected.name}">Nazwa leku</h3>-->
+
+<!--                                <form id="docMedForm" class="docmeds-form" method="post" th:action="@{/medications/save}">-->
+<!--                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+<!--                                    <input type="hidden" name="id" th:value="${selected.id}"/>-->
+
+<!--                                    &lt;!&ndash; VIEW &ndash;&gt;-->
+<!--                                    <div class="docmeds-view">-->
+<!--                                        <div class="docmeds-box">-->
+<!--                                            <div class="docmeds-box__label">Dawka</div>-->
+<!--                                            <div class="docmeds-box__value"-->
+<!--                                                 th:text="${selected.dose != null ? selected.dose : '-'}">1 tabletka</div>-->
+<!--                                        </div>-->
+
+<!--                                        <div class="docmeds-box">-->
+<!--                                            <div class="docmeds-box__label">Godzina<br/>przyjęcia</div>-->
+<!--                                            <div class="docmeds-box__value"-->
+<!--                                                 th:text="${selected.intakeTime != null ? #temporals.format(selected.intakeTime, 'HH:mm') : '&#45;&#45;:&#45;&#45;'}">-->
+<!--                                                15:00-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+
+<!--                                    &lt;!&ndash; EDIT &ndash;&gt;-->
+<!--                                    <div class="docmeds-edit">-->
+<!--                                        <div class="docmeds-edit__row">-->
+<!--                                            <label class="docmeds-edit__label">Nazwa leku:</label>-->
+<!--                                            <input class="docmeds-edit__input" type="text" name="name"-->
+<!--                                                   th:value="${selected.name}" data-doc-editable="1">-->
+<!--                                        </div>-->
+
+<!--                                        <div class="docmeds-edit__row">-->
+<!--                                            <label class="docmeds-edit__label">Przyjmowana dawka:</label>-->
+<!--                                            <input class="docmeds-edit__input" type="text" name="dose"-->
+<!--                                                   th:value="${selected.dose}" data-doc-editable="1">-->
+<!--                                        </div>-->
+
+<!--                                        <div class="docmeds-edit__row">-->
+<!--                                            <label class="docmeds-edit__label">Godzina przyjęcia:</label>-->
+<!--                                            <input class="docmeds-edit__input" type="time" name="intakeTime"-->
+<!--                                                   th:value="${selected.intakeTime != null ? #temporals.format(selected.intakeTime, 'HH:mm') : ''}"-->
+<!--                                                   data-doc-editable="1">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+
+<!--                                    &lt;!&ndash; meta &ndash;&gt;-->
+<!--                                    <div class="docmeds-meta">-->
+<!--                                        <div class="docmeds-meta__row">-->
+<!--                                            <span class="docmeds-meta__label">Status:</span>-->
+<!--                                            <span class="docmeds-meta__value" th:text="${selected.status}">SCHEDULED</span>-->
+<!--                                        </div>-->
+
+<!--                                        <div class="docmeds-meta__row">-->
+<!--                                            <span class="docmeds-meta__label">Źródło:</span>-->
+<!--                                            <span class="docmeds-meta__value"-->
+<!--                                                  th:text="${selected.createdByDoctor ? 'Lekarz' : 'Pacjent'}">Lekarz</span>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+
+<!--                                    &lt;!&ndash; jeśli brak uprawnień do edycji &ndash;&gt;-->
+<!--                                    <div class="docmeds-warning" th:if="${!canEditSelected}">-->
+<!--                                        <span class="docmeds-warning__icon">❗</span>-->
+<!--                                        <span>Jako pacjent nie posiadasz uprawnień do edycji leku</span>-->
+<!--                                        <span class="docmeds-warning__icon">❗</span>-->
+<!--                                    </div>-->
+
+<!--                                    &lt;!&ndash; akcje &ndash;&gt;-->
+<!--                                    <div class="docmeds-actions">-->
+<!--                                        <div class="docmeds-actions__left">-->
+<!--                                            <button id="docCancelBtn" class="docmeds-btn docmeds-btn&#45;&#45;ghost" type="button" hidden>-->
+<!--                                                Anuluj-->
+<!--                                            </button>-->
+<!--                                            <button id="docSaveBtn" class="docmeds-btn docmeds-btn&#45;&#45;primary" type="submit" hidden>-->
+<!--                                                Zapisz-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+
+<!--                                        <div class="docmeds-actions__right">-->
+<!--                                            <button id="docEditBtn" class="docmeds-btn docmeds-btn&#45;&#45;soft" type="button"-->
+<!--                                                    th:if="${canEditSelected}">-->
+<!--                                                Edytuj-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+
+<!--                                    <input type="hidden" id="docCanEditSelected" th:value="${canEditSelected}"/>-->
+<!--                                </form>-->
+
+<!--                            </div>-->
+
+<!--                        </section>-->
+
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </section>-->
+<!--        </div>-->
+
+<!--    </div>-->
+<!--</main>-->
+
+<!--<script>-->
+<!--    (() => {-->
+<!--        const form = document.getElementById('docMedForm');-->
+<!--        if (!form) return;-->
+
+<!--        const canEdit = (document.getElementById('docCanEditSelected')?.value === 'true');-->
+
+<!--        const editBtn = document.getElementById('docEditBtn');-->
+<!--        const cancelBtn = document.getElementById('docCancelBtn');-->
+<!--        const saveBtn = document.getElementById('docSaveBtn');-->
+
+<!--        const fields = [...form.querySelectorAll('[data-doc-editable="1"]')];-->
+<!--        const initial = new Map(fields.map(el => [el.name, el.value]));-->
+
+<!--        function setEditing(on) {-->
+<!--            form.classList.toggle('doc-is-editing', on);-->
+<!--            fields.forEach(el => el.disabled = !on);-->
+
+<!--            if (editBtn) editBtn.hidden = on;-->
+<!--            cancelBtn.hidden = !on;-->
+<!--            saveBtn.hidden = !on;-->
+<!--        }-->
+
+<!--        fields.forEach(el => el.disabled = true);-->
+<!--        if (!canEdit) return;-->
+
+<!--        setEditing(false);-->
+
+<!--        editBtn?.addEventListener('click', () => setEditing(true));-->
+<!--        cancelBtn.addEventListener('click', () => {-->
+<!--            fields.forEach(el => el.value = initial.get(el.name) ?? '');-->
+<!--            setEditing(false);-->
+<!--        });-->
+<!--    })();-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
 <html lang="pl"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
@@ -140,6 +400,16 @@
                                                 15:00
                                             </div>
                                         </div>
+
+                                        <!-- Data rozpoczęcia i zakończenia terapii -->
+                                        <div class="docmeds-box">
+                                            <div class="docmeds-box__label">Data rozpoczęcia terapii</div>
+                                            <div class="docmeds-box__value" th:text="${selected.therapyStartDate}">01.01.2026</div>
+                                        </div>
+                                        <div class="docmeds-box">
+                                            <div class="docmeds-box__label">Data zakończenia terapii</div>
+                                            <div class="docmeds-box__value" th:text="${selected.therapyEndDate}">01.01.2026</div>
+                                        </div>
                                     </div>
 
                                     <!-- EDIT -->
@@ -162,26 +432,33 @@
                                                    th:value="${selected.intakeTime != null ? #temporals.format(selected.intakeTime, 'HH:mm') : ''}"
                                                    data-doc-editable="1">
                                         </div>
+
+                                        <!-- Edycja tylko daty rozpoczęcia i zakończenia terapii -->
+                                        <div class="docmeds-edit__row" th:if="${canEditSelected}">
+                                            <label class="docmeds-edit__label">Data rozpoczęcia terapii:</label>
+                                            <input class="docmeds-edit__input" type="date" name="therapyStartDate"
+                                                   th:value="${selected.therapyStartDate}">
+                                        </div>
+
+                                        <div class="docmeds-edit__row" th:if="${canEditSelected}">
+                                            <label class="docmeds-edit__label">Data zakończenia terapii:</label>
+                                            <input class="docmeds-edit__input" type="date" name="therapyEndDate"
+                                                   th:value="${selected.therapyEndDate}">
+                                        </div>
                                     </div>
 
-                                    <!-- meta -->
+                                    <!-- META -->
                                     <div class="docmeds-meta">
                                         <div class="docmeds-meta__row">
                                             <span class="docmeds-meta__label">Status:</span>
                                             <span class="docmeds-meta__value" th:text="${selected.status}">SCHEDULED</span>
                                         </div>
-
-                                        <div class="docmeds-meta__row">
-                                            <span class="docmeds-meta__label">Źródło:</span>
-                                            <span class="docmeds-meta__value"
-                                                  th:text="${selected.createdByDoctor ? 'Lekarz' : 'Pacjent'}">Lekarz</span>
-                                        </div>
                                     </div>
 
-                                    <!-- jeśli brak uprawnień do edycji -->
+                                    <!-- WARNING -->
                                     <div class="docmeds-warning" th:if="${!canEditSelected}">
                                         <span class="docmeds-warning__icon">❗</span>
-                                        <span>Jako pacjent nie posiadasz uprawnień do edycji leku</span>
+                                        <span>Brak uprawnień do edycji tego leku</span>
                                         <span class="docmeds-warning__icon">❗</span>
                                     </div>
 
