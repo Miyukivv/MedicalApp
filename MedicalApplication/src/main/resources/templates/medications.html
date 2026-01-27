@@ -1,346 +1,346 @@
-<!--<!doctype html>-->
-<!--<html lang="pl"-->
-<!--      xmlns:th="http://www.thymeleaf.org"-->
-<!--      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!doctype html>
+<html lang="pl"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<!--<head>-->
-<!--    <meta charset="UTF-8"/>-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1"/>-->
-<!--    <title>Aplikacja medyczna - zarządzanie lekami</title>-->
-<!--    <link rel="stylesheet" th:href="@{/css/style.css}">-->
-<!--    <link rel="stylesheet" th:href="@{/css/medications.css}">-->
-<!--</head>-->
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Aplikacja medyczna - zarządzanie lekami</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/medications.css}">
+</head>
 
-<!--<body class="no-scroll-body page-bg">-->
+<body class="no-scroll-body page-bg">
 
-<!--<header class="topbar">-->
-<!--    <div class="container topbar__inner">-->
-<!--        <a class="brand" th:href="@{/home}">-->
-<!--            <img class="brand__logo" th:src="@{/img/logo.jpg}" alt="YourMed" />-->
-<!--        </a>-->
+<header class="topbar">
+    <div class="container topbar__inner">
+        <a class="brand" th:href="@{/home}">
+            <img class="brand__logo" th:src="@{/img/logo.jpg}" alt="YourMed" />
+        </a>
 
-<!--        <div class="topbar__greeting">-->
-<!--            Witaj <span th:text="${welcomeName}">Imię</span>, zdrowego dnia!-->
-<!--        </div>-->
+        <div class="topbar__greeting">
+            Witaj <span th:text="${welcomeName}">Imię</span>, zdrowego dnia!
+        </div>
 
-<!--        <nav class="nav">-->
-<!--            <a class="nav__link" th:href="@{/home}">Strona główna</a>-->
-<!--            <a class="nav__link" th:href="@{/profile}">Profil</a>-->
-<!--            <a class="nav__link" th:href="@{/status}">Status &amp; przegląd</a>-->
-<!--            <a class="nav__link nav__link&#45;&#45;active" th:href="@{/medications}">Zarządzanie lekami</a>-->
-<!--            <a class="nav__link" th:href="@{/doctor}" sec:authorize="hasRole('DOCTOR')">Dla lekarza</a>-->
-<!--        </nav>-->
+        <nav class="nav">
+            <a class="nav__link" th:href="@{/home}">Strona główna</a>
+            <a class="nav__link" th:href="@{/profile}">Profil</a>
+            <a class="nav__link" th:href="@{/status}">Status &amp; przegląd</a>
+            <a class="nav__link nav__link--active" th:href="@{/medications}">Zarządzanie lekami</a>
+            <a class="nav__link" th:href="@{/doctor}" sec:authorize="hasRole('DOCTOR')">Dla lekarza</a>
+        </nav>
 
-<!--        <div class="user-menu">-->
-<!--            <button class="user-menu__btn" type="button" aria-haspopup="true" aria-expanded="false">-->
-<!--                <span class="user-menu__label">Ustawienia</span>-->
-<!--                <span class="user-menu__icon" aria-hidden="true">⚙️</span>-->
-<!--            </button>-->
+        <div class="user-menu">
+            <button class="user-menu__btn" type="button" aria-haspopup="true" aria-expanded="false">
+                <span class="user-menu__label">Ustawienia</span>
+                <span class="user-menu__icon" aria-hidden="true">⚙️</span>
+            </button>
 
-<!--            <div class="user-menu__dropdown" role="menu" aria-label="Ustawienia konta">-->
-<!--                <form th:action="@{/logout}" method="post" class="user-menu__logout">-->
-<!--                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
-<!--                    <button type="submit" class="user-menu__item user-menu__item&#45;&#45;danger user-menu__btnlink">-->
-<!--                        Wyloguj się-->
-<!--                    </button>-->
-<!--                </form>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</header>-->
+            <div class="user-menu__dropdown" role="menu" aria-label="Ustawienia konta">
+                <form th:action="@{/logout}" method="post" class="user-menu__logout">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="user-menu__item user-menu__item--danger user-menu__btnlink">
+                        Wyloguj się
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
 
-<!--<main class="meds" th:classappend="${targetPatientId != null} ? ' meds&#45;&#45;doctor' : ''">-->
-<!--    <div class="container meds__container">-->
-<!--        <div class="meds-shell">-->
-<!--            <section class="meds-panel">-->
-<!--                <div class="meds-panel__inner">-->
+<main class="meds" th:classappend="${targetPatientId != null} ? ' meds--doctor' : ''">
+    <div class="container meds__container">
+        <div class="meds-shell">
+            <section class="meds-panel">
+                <div class="meds-panel__inner">
 
-<!--                    <div class="meds-grid"-->
-<!--                         th:with="sel=${selected != null ? selected : (!#lists.isEmpty(medications) ? medications[0] : null)},-->
-<!--                                  canEditSel=${sel != null and (canEditSelected == true)}">-->
+                    <div class="meds-grid"
+                         th:with="sel=${selected != null ? selected : (!#lists.isEmpty(medications) ? medications[0] : null)},
+                                  canEditSel=${sel != null and (canEditSelected == true)}">
 
-<!--                        &lt;!&ndash; LEWA KOLUMNA &ndash;&gt;-->
-<!--                        <aside class="meds-left">-->
-<!--                            <div class="meds-left__top">-->
-<!--                                <div class="meds-left__select">Przyjmowane leki</div>-->
-<!--                            </div>-->
+                        <!-- LEWA KOLUMNA -->
+                        <aside class="meds-left">
+                            <div class="meds-left__top">
+                                <div class="meds-left__select">Przyjmowane leki</div>
+                            </div>
 
-<!--                            <div class="meds-list" id="medList">-->
+                            <div class="meds-list" id="medList">
 
-<!--                                <div class="meds-empty meds-empty&#45;&#45;left" th:if="${sel == null}">-->
-<!--                                    Brak leków do wyświetlenia.-->
-<!--                                </div>-->
+                                <div class="meds-empty meds-empty--left" th:if="${sel == null}">
+                                    Brak leków do wyświetlenia.
+                                </div>
 
-<!--                                <a class="meds-item"-->
-<!--                                   th:each="m : ${medications}"-->
-<!--                                   th:href="${targetPatientId != null}-->
-<!--                                            ? @{/medications(id=${m.id}, patientId=${targetPatientId})}-->
-<!--                                            : @{/medications(id=${m.id})}"-->
-<!--                                   th:classappend="${sel != null and sel.id == m.id} ? ' meds-item&#45;&#45;active' : ''">-->
+                                <a class="meds-item"
+                                   th:each="m : ${medications}"
+                                   th:href="${targetPatientId != null}
+                                            ? @{/medications(id=${m.id}, patientId=${targetPatientId})}
+                                            : @{/medications(id=${m.id})}"
+                                   th:classappend="${sel != null and sel.id == m.id} ? ' meds-item--active' : ''">
 
-<!--                                    <div class="meds-item__left">-->
-<!--                                        <span class="meds-item__name" th:text="${m.name}">nazwa leku</span>-->
+                                    <div class="meds-item__left">
+                                        <span class="meds-item__name" th:text="${m.name}">nazwa leku</span>
 
-<!--                                        &lt;!&ndash;  klodka jeśli aktualny user NIE może edytować tego leku &ndash;&gt;-->
-<!--                                        <span class="meds-item__lock"-->
-<!--                                              th:if="${editableMedicationIds != null and !editableMedicationIds.contains(m.id)}"-->
-<!--                                              aria-label="Zablokowane"-->
-<!--                                              title="Nie masz uprawnień do edycji">🔒</span>-->
-<!--                                    </div>-->
+                                        <!--  klodka jeśli aktualny user NIE może edytować tego leku -->
+                                        <span class="meds-item__lock"
+                                              th:if="${editableMedicationIds != null and !editableMedicationIds.contains(m.id)}"
+                                              aria-label="Zablokowane"
+                                              title="Nie masz uprawnień do edycji">🔒</span>
+                                    </div>
 
-<!--                                    <span class="meds-dot"-->
-<!--                                          th:classappend="${m.status == 'TAKEN'} ? ' meds-dot&#45;&#45;green' :-->
-<!--                                                         (${m.status == 'NOT_REQUIRED'} ? ' meds-dot&#45;&#45;blue' : ' meds-dot&#45;&#45;red')"-->
-<!--                                          aria-hidden="true"></span>-->
+                                    <span class="meds-dot"
+                                          th:classappend="${m.status == 'TAKEN'} ? ' meds-dot--green' :
+                                                         (${m.status == 'NOT_REQUIRED'} ? ' meds-dot--blue' : ' meds-dot--red')"
+                                          aria-hidden="true"></span>
 
-<!--                                    &lt;!&ndash; Przycisk "Usuń" &ndash;&gt;-->
-<!--                                    <form th:action="@{/medications/delete}" method="post" style="display:inline;">-->
-<!--                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
-<!--                                        <input type="hidden" name="medicationId" th:value="${m.id}"/>-->
-<!--                                        <button type="submit" class="btn btn&#45;&#45;outline btn&#45;&#45;red" th:if="${!m.createdByDoctor}" title="Usuń lek">Usuń</button>-->
-<!--                                    </form>-->
+                                    <!-- Przycisk "Usuń" -->
+                                    <form th:action="@{/medications/delete}" method="post" style="display:inline;">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                        <input type="hidden" name="medicationId" th:value="${m.id}"/>
+                                        <button type="submit" class="btn btn--outline btn--red" th:if="${!m.createdByDoctor}" title="Usuń lek">Usuń</button>
+                                    </form>
 
-<!--                                </a>-->
-<!--                            </div>-->
+                                </a>
+                            </div>
 
-<!--                            &lt;!&ndash; DODAJ LEK (self albo pacjentowi) &ndash;&gt;-->
-<!--                            <div class="meds-left__bottom">-->
-<!--                                <button id="openAddMedModal" class="meds-left__add" type="button"-->
-<!--                                        th:text="${targetPatientId != null} ? 'Dodaj lek pacjentowi' : 'Dodaj nowy lek'">-->
-<!--                                    Dodaj nowy lek-->
-<!--                                </button>-->
-<!--                            </div>-->
-<!--                        </aside>-->
+                            <!-- DODAJ LEK (self albo pacjentowi) -->
+                            <div class="meds-left__bottom">
+                                <button id="openAddMedModal" class="meds-left__add" type="button"
+                                        th:text="${targetPatientId != null} ? 'Dodaj lek pacjentowi' : 'Dodaj nowy lek'">
+                                    Dodaj nowy lek
+                                </button>
+                            </div>
+                        </aside>
 
-<!--                        &lt;!&ndash; PRAWA KOLUMNA &ndash;&gt;-->
-<!--                        <section class="meds-right">-->
+                        <!-- PRAWA KOLUMNA -->
+                        <section class="meds-right">
 
-<!--                            &lt;!&ndash; nagłówek tylko w widoku pacjenta &ndash;&gt;-->
-<!--                            <div class="meds-right__header" th:if="${targetPatientId != null}">-->
-<!--                                <a class="meds-back" th:href="@{/doctor}">← Powrót do pacjentów</a>-->
-<!--                                <div class="meds-patient">-->
-<!--                                    Pacjent: <span th:text="${userFullName}">Jan Kowalski</span>-->
-<!--                                </div>-->
-<!--                            </div>-->
+                            <!-- nagłówek tylko w widoku pacjenta -->
+                            <div class="meds-right__header" th:if="${targetPatientId != null}">
+                                <a class="meds-back" th:href="@{/doctor}">← Powrót do pacjentów</a>
+                                <div class="meds-patient">
+                                    Pacjent: <span th:text="${userFullName}">Jan Kowalski</span>
+                                </div>
+                            </div>
 
-<!--                            <div class="meds-empty" th:if="${sel == null}">-->
-<!--                                Brak leków do wyświetlenia.-->
-<!--                            </div>-->
+                            <div class="meds-empty" th:if="${sel == null}">
+                                Brak leków do wyświetlenia.
+                            </div>
 
-<!--                            <div class="meds-right__body" th:if="${sel != null}">-->
-<!--                                <h3 class="meds-right__title" th:text="${sel.name}">Nazwa leku</h3>-->
+                            <div class="meds-right__body" th:if="${sel != null}">
+                                <h3 class="meds-right__title" th:text="${sel.name}">Nazwa leku</h3>
 
-<!--                                <form id="medForm" class="meds-form" method="post" th:action="@{/medications/save}">-->
-<!--                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
-<!--                                    <input type="hidden" name="id" th:value="${sel.id}"/>-->
+                                <form id="medForm" class="meds-form" method="post" th:action="@{/medications/save}">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                    <input type="hidden" name="id" th:value="${sel.id}"/>
 
-<!--                                    <input type="hidden" name="patientId"-->
-<!--                                           th:if="${targetPatientId != null}"-->
-<!--                                           th:value="${targetPatientId}"/>-->
+                                    <input type="hidden" name="patientId"
+                                           th:if="${targetPatientId != null}"
+                                           th:value="${targetPatientId}"/>
 
-<!--                                    &lt;!&ndash; VIEW &ndash;&gt;-->
-<!--                                    <div class="meds-view">-->
-<!--                                        <div class="meds-box">-->
-<!--                                            <div class="meds-box__label">Dawka</div>-->
-<!--                                            <div class="meds-box__value"-->
-<!--                                                 th:text="${sel.dose != null ? sel.dose : '-'}">1 tabletka</div>-->
-<!--                                        </div>-->
+                                    <!-- VIEW -->
+                                    <div class="meds-view">
+                                        <div class="meds-box">
+                                            <div class="meds-box__label">Dawka</div>
+                                            <div class="meds-box__value"
+                                                 th:text="${sel.dose != null ? sel.dose : '-'}">1 tabletka</div>
+                                        </div>
 
-<!--                                        <div class="meds-box">-->
-<!--                                            <div class="meds-box__label">Godzina<br/>przyjęcia</div>-->
-<!--                                            <div class="meds-box__value"-->
-<!--                                                 th:text="${sel.intakeTime != null ? #temporals.format(sel.intakeTime, 'HH:mm') : '&#45;&#45;:&#45;&#45;'}">-->
-<!--                                                15:00-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                                        <div class="meds-box">
+                                            <div class="meds-box__label">Godzina<br/>przyjęcia</div>
+                                            <div class="meds-box__value"
+                                                 th:text="${sel.intakeTime != null ? #temporals.format(sel.intakeTime, 'HH:mm') : '--:--'}">
+                                                15:00
+                                            </div>
+                                        </div>
+                                    </div>
 
-<!--                                    &lt;!&ndash; EDIT &ndash;&gt;-->
-<!--                                    <div class="meds-edit">-->
-<!--                                        <div class="meds-edit__row">-->
-<!--                                            <label class="meds-edit__label">Nazwa leku:</label>-->
-<!--                                            <input class="meds-edit__input" type="text" name="name"-->
-<!--                                                   th:value="${sel.name}" data-editable="1">-->
-<!--                                        </div>-->
+                                    <!-- EDIT -->
+                                    <div class="meds-edit">
+                                        <div class="meds-edit__row">
+                                            <label class="meds-edit__label">Nazwa leku:</label>
+                                            <input class="meds-edit__input" type="text" name="name"
+                                                   th:value="${sel.name}" data-editable="1">
+                                        </div>
 
-<!--                                        <div class="meds-edit__row">-->
-<!--                                            <label class="meds-edit__label">Przyjmowana dawka:</label>-->
-<!--                                            <input class="meds-edit__input" type="text" name="dose"-->
-<!--                                                   th:value="${sel.dose}" data-editable="1">-->
-<!--                                        </div>-->
+                                        <div class="meds-edit__row">
+                                            <label class="meds-edit__label">Przyjmowana dawka:</label>
+                                            <input class="meds-edit__input" type="text" name="dose"
+                                                   th:value="${sel.dose}" data-editable="1">
+                                        </div>
 
-<!--                                        <div class="meds-edit__row">-->
-<!--                                            <label class="meds-edit__label">Godzina przyjęcia:</label>-->
-<!--                                            <input class="meds-edit__input" type="time" name="intakeTime"-->
-<!--                                                   th:value="${sel.intakeTime != null ? #temporals.format(sel.intakeTime, 'HH:mm') : ''}"-->
-<!--                                                   data-editable="1">-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                                        <div class="meds-edit__row">
+                                            <label class="meds-edit__label">Godzina przyjęcia:</label>
+                                            <input class="meds-edit__input" type="time" name="intakeTime"
+                                                   th:value="${sel.intakeTime != null ? #temporals.format(sel.intakeTime, 'HH:mm') : ''}"
+                                                   data-editable="1">
+                                        </div>
+                                    </div>
 
-<!--                                    &lt;!&ndash; META &ndash;&gt;-->
-<!--                                    <div class="meds-meta">-->
-<!--                                        <div class="meds-meta__row">-->
-<!--                                            <span class="meds-meta__label">Status:</span>-->
-<!--                                            <span class="meds-meta__value" th:text="${sel.status}">SCHEDULED</span>-->
-<!--                                        </div>-->
+                                    <!-- META -->
+                                    <div class="meds-meta">
+                                        <div class="meds-meta__row">
+                                            <span class="meds-meta__label">Status:</span>
+                                            <span class="meds-meta__value" th:text="${sel.status}">SCHEDULED</span>
+                                        </div>
 
-<!--                                        <div class="meds-meta__row">-->
-<!--                                            <span class="meds-meta__label">Źródło:</span>-->
-<!--                                            <span class="meds-meta__value"-->
-<!--                                                  th:text="${sel.createdByDoctor ? 'Lekarz' : 'Pacjent'}">Pacjent</span>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                                        <div class="meds-meta__row">
+                                            <span class="meds-meta__label">Źródło:</span>
+                                            <span class="meds-meta__value"
+                                                  th:text="${sel.createdByDoctor ? 'Lekarz' : 'Pacjent'}">Pacjent</span>
+                                        </div>
+                                    </div>
 
-<!--                                    &lt;!&ndash; WARNING &ndash;&gt;-->
-<!--                                    <div class="meds-warning" th:if="${!canEditSel}">-->
-<!--                                        <span class="meds-warning__icon">❗</span>-->
-<!--                                        <span>Brak uprawnień do edycji tego leku</span>-->
-<!--                                        <span class="meds-warning__icon">❗</span>-->
-<!--                                    </div>-->
+                                    <!-- WARNING -->
+                                    <div class="meds-warning" th:if="${!canEditSel}">
+                                        <span class="meds-warning__icon">❗</span>
+                                        <span>Brak uprawnień do edycji tego leku</span>
+                                        <span class="meds-warning__icon">❗</span>
+                                    </div>
 
-<!--                                    &lt;!&ndash; akcje &ndash;&gt;-->
-<!--                                    <div class="meds-actions">-->
-<!--                                        <div class="meds-actions__left">-->
-<!--                                            <button id="cancelBtn" class="meds-btn meds-btn&#45;&#45;ghost" type="button" hidden>-->
-<!--                                                Anuluj-->
-<!--                                            </button>-->
-<!--                                            <button id="saveBtn" class="meds-btn meds-btn&#45;&#45;primary" type="submit" hidden>-->
-<!--                                                Zapisz-->
-<!--                                            </button>-->
-<!--                                        </div>-->
+                                    <!-- akcje -->
+                                    <div class="meds-actions">
+                                        <div class="meds-actions__left">
+                                            <button id="cancelBtn" class="meds-btn meds-btn--ghost" type="button" hidden>
+                                                Anuluj
+                                            </button>
+                                            <button id="saveBtn" class="meds-btn meds-btn--primary" type="submit" hidden>
+                                                Zapisz
+                                            </button>
+                                        </div>
 
-<!--                                        <div class="meds-actions__right">-->
-<!--                                            <button id="editBtn" class="meds-btn meds-btn&#45;&#45;soft" type="button"-->
-<!--                                                    th:if="${canEditSel}">-->
-<!--                                                Edytuj-->
-<!--                                            </button>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                                        <div class="meds-actions__right">
+                                            <button id="editBtn" class="meds-btn meds-btn--soft" type="button"
+                                                    th:if="${canEditSel}">
+                                                Edytuj
+                                            </button>
+                                        </div>
+                                    </div>
 
-<!--                                    <input type="hidden" id="canEditSelected" th:value="${canEditSel}"/>-->
-<!--                                </form>-->
-<!--                            </div>-->
-<!--                        </section>-->
+                                    <input type="hidden" id="canEditSelected" th:value="${canEditSel}"/>
+                                </form>
+                            </div>
+                        </section>
 
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </section>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</main>-->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
 
-<!--&lt;!&ndash; MODAL: Dodaj lek &ndash;&gt;-->
-<!--<div id="addMedModal" class="meds-modal" aria-hidden="true">-->
-<!--    <div class="meds-modal__overlay" data-close></div>-->
-<!--    <div class="meds-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="addMedTitle">-->
-<!--        <button class="meds-modal__close" type="button" data-close aria-label="Zamknij">&times;</button>-->
+<!-- MODAL: Dodaj lek -->
+<div id="addMedModal" class="meds-modal" aria-hidden="true">
+    <div class="meds-modal__overlay" data-close></div>
+    <div class="meds-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="addMedTitle">
+        <button class="meds-modal__close" type="button" data-close aria-label="Zamknij">&times;</button>
 
-<!--        <h2 id="addMedTitle" class="meds-modal__title"-->
-<!--            th:text="${targetPatientId != null} ? 'Dodaj lek pacjentowi' : 'Dodaj nowy lek'">-->
-<!--            Dodaj nowy lek-->
-<!--        </h2>-->
+        <h2 id="addMedTitle" class="meds-modal__title"
+            th:text="${targetPatientId != null} ? 'Dodaj lek pacjentowi' : 'Dodaj nowy lek'">
+            Dodaj nowy lek
+        </h2>
 
-<!--        <form id="addMedForm" class="meds-modal__form"-->
-<!--              th:action="${targetPatientId != null}-->
-<!--                         ? @{/doctor/patients/{pid}/medications/new(pid=${targetPatientId})}-->
-<!--                         : @{/medications/new}"-->
-<!--              method="post">-->
+        <form id="addMedForm" class="meds-modal__form"
+              th:action="${targetPatientId != null}
+                         ? @{/doctor/patients/{pid}/medications/new(pid=${targetPatientId})}
+                         : @{/medications/new}"
+              method="post">
 
-<!--            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-<!--            &lt;!&ndash; (dla /medications/new) &ndash;&gt;-->
-<!--            <input type="hidden" name="returnToId"-->
-<!--                   th:if="${selected != null}"-->
-<!--                   th:value="${selected.id}"/>-->
+            <!-- (dla /medications/new) -->
+            <input type="hidden" name="returnToId"
+                   th:if="${selected != null}"
+                   th:value="${selected.id}"/>
 
-<!--            <div class="meds-modal__row">-->
-<!--                <label class="meds-modal__label" for="newMedName">Nazwa leku</label>-->
-<!--                <input class="meds-modal__input" id="newMedName" name="name" type="text" required>-->
-<!--            </div>-->
+            <div class="meds-modal__row">
+                <label class="meds-modal__label" for="newMedName">Nazwa leku</label>
+                <input class="meds-modal__input" id="newMedName" name="name" type="text" required>
+            </div>
 
-<!--            <div class="meds-modal__row">-->
-<!--                <label class="meds-modal__label" for="newMedDose">Dawka</label>-->
-<!--                <input class="meds-modal__input" id="newMedDose" name="dose" type="text" required>-->
-<!--            </div>-->
+            <div class="meds-modal__row">
+                <label class="meds-modal__label" for="newMedDose">Dawka</label>
+                <input class="meds-modal__input" id="newMedDose" name="dose" type="text" required>
+            </div>
 
-<!--            <div class="meds-modal__row">-->
-<!--                <label class="meds-modal__label" for="newMedTime">Godzina przyjęcia</label>-->
-<!--                <input class="meds-modal__input" id="newMedTime" name="intakeTime" type="time">-->
-<!--            </div>-->
-<!--        </form>-->
+            <div class="meds-modal__row">
+                <label class="meds-modal__label" for="newMedTime">Godzina przyjęcia</label>
+                <input class="meds-modal__input" id="newMedTime" name="intakeTime" type="time">
+            </div>
+        </form>
 
-<!--        <div class="meds-modal__actions">-->
-<!--            <button class="meds-modal__btn meds-modal__btn&#45;&#45;ghost" type="button" data-close>Anuluj</button>-->
-<!--            <button class="meds-modal__btn meds-modal__btn&#45;&#45;primary" type="submit" form="addMedForm"-->
-<!--                    th:text="${targetPatientId != null} ? 'Dodaj pacjentowi' : 'Dodaj'">-->
-<!--                Dodaj-->
-<!--            </button>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
+        <div class="meds-modal__actions">
+            <button class="meds-modal__btn meds-modal__btn--ghost" type="button" data-close>Anuluj</button>
+            <button class="meds-modal__btn meds-modal__btn--primary" type="submit" form="addMedForm"
+                    th:text="${targetPatientId != null} ? 'Dodaj pacjentowi' : 'Dodaj'">
+                Dodaj
+            </button>
+        </div>
+    </div>
+</div>
 
-<!--<script>-->
-<!--    (() => {-->
-<!--        // edycja-->
-<!--        const form = document.getElementById('medForm');-->
-<!--        if (form) {-->
-<!--            const canEdit = (document.getElementById('canEditSelected')?.value === 'true');-->
-<!--            const editBtn = document.getElementById('editBtn');-->
-<!--            const cancelBtn = document.getElementById('cancelBtn');-->
-<!--            const saveBtn = document.getElementById('saveBtn');-->
-<!--            const fields = [...form.querySelectorAll('[data-editable="1"]')];-->
-<!--            const initial = new Map(fields.map(el => [el.name, el.value]));-->
+<script>
+    (() => {
+        // edycja
+        const form = document.getElementById('medForm');
+        if (form) {
+            const canEdit = (document.getElementById('canEditSelected')?.value === 'true');
+            const editBtn = document.getElementById('editBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const fields = [...form.querySelectorAll('[data-editable="1"]')];
+            const initial = new Map(fields.map(el => [el.name, el.value]));
 
-<!--            function setEditing(on) {-->
-<!--                form.classList.toggle('is-editing', on);-->
-<!--                fields.forEach(el => el.disabled = !on);-->
-<!--                if (editBtn) editBtn.hidden = on;-->
-<!--                if (cancelBtn) cancelBtn.hidden = !on;-->
-<!--                if (saveBtn) saveBtn.hidden = !on;-->
-<!--            }-->
+            function setEditing(on) {
+                form.classList.toggle('is-editing', on);
+                fields.forEach(el => el.disabled = !on);
+                if (editBtn) editBtn.hidden = on;
+                if (cancelBtn) cancelBtn.hidden = !on;
+                if (saveBtn) saveBtn.hidden = !on;
+            }
 
-<!--            fields.forEach(el => el.disabled = true);-->
+            fields.forEach(el => el.disabled = true);
 
-<!--            if (canEdit) {-->
-<!--                setEditing(false);-->
-<!--                editBtn?.addEventListener('click', () => setEditing(true));-->
-<!--                cancelBtn?.addEventListener('click', () => {-->
-<!--                    fields.forEach(el => el.value = initial.get(el.name) ?? '');-->
-<!--                    setEditing(false);-->
-<!--                });-->
-<!--            }-->
-<!--        }-->
+            if (canEdit) {
+                setEditing(false);
+                editBtn?.addEventListener('click', () => setEditing(true));
+                cancelBtn?.addEventListener('click', () => {
+                    fields.forEach(el => el.value = initial.get(el.name) ?? '');
+                    setEditing(false);
+                });
+            }
+        }
 
-<!--        // modal-->
-<!--        const openBtn = document.getElementById('openAddMedModal');-->
-<!--        const modal = document.getElementById('addMedModal');-->
-<!--        if (!modal) return;-->
+        // modal
+        const openBtn = document.getElementById('openAddMedModal');
+        const modal = document.getElementById('addMedModal');
+        if (!modal) return;
 
-<!--        const closeTargets = modal.querySelectorAll('[data-close]');-->
-<!--        const firstInput = modal.querySelector('input[name="name"]');-->
+        const closeTargets = modal.querySelectorAll('[data-close]');
+        const firstInput = modal.querySelector('input[name="name"]');
 
-<!--        function openModal() {-->
-<!--            modal.classList.add('is-open');-->
-<!--            modal.setAttribute('aria-hidden', 'false');-->
-<!--            firstInput?.focus();-->
-<!--        }-->
+        function openModal() {
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+            firstInput?.focus();
+        }
 
-<!--        function closeModal() {-->
-<!--            modal.classList.remove('is-open');-->
-<!--            modal.setAttribute('aria-hidden', 'true');-->
-<!--            openBtn?.focus();-->
-<!--        }-->
+        function closeModal() {
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+            openBtn?.focus();
+        }
 
-<!--        openBtn?.addEventListener('click', openModal);-->
-<!--        closeTargets.forEach(el => el.addEventListener('click', closeModal));-->
-<!--        window.addEventListener('keydown', (e) => {-->
-<!--            if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();-->
-<!--        });-->
-<!--    })();-->
-<!--</script>-->
+        openBtn?.addEventListener('click', openModal);
+        closeTargets.forEach(el => el.addEventListener('click', closeModal));
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+        });
+    })();
+</script>
 
-<!--</body>-->
-<!--</html>-->
+</body>
+</html>
 
 
 
@@ -590,246 +590,246 @@
 <!--</html>-->
 
 
-<!DOCTYPE html>
-<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Aplikacja medyczna - zarządzanie lekami</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/medications.css}">
-</head>
-<body class="no-scroll-body page-bg">
+<!--<!DOCTYPE html>-->
+<!--<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8"/>-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1"/>-->
+<!--    <title>Aplikacja medyczna - zarządzanie lekami</title>-->
+<!--    <link rel="stylesheet" th:href="@{/css/style.css}">-->
+<!--    <link rel="stylesheet" th:href="@{/css/medications.css}">-->
+<!--</head>-->
+<!--<body class="no-scroll-body page-bg">-->
 
-<header class="topbar">
-    <div class="container topbar__inner">
-        <a class="brand" th:href="@{/home}">
-            <img class="brand__logo" th:src="@{/img/logo.jpg}" alt="YourMed" />
-        </a>
+<!--<header class="topbar">-->
+<!--    <div class="container topbar__inner">-->
+<!--        <a class="brand" th:href="@{/home}">-->
+<!--            <img class="brand__logo" th:src="@{/img/logo.jpg}" alt="YourMed" />-->
+<!--        </a>-->
 
-        <div class="topbar__greeting">
-            Witaj <span th:text="${welcomeName}">Imię</span>, zdrowego dnia!
-        </div>
+<!--        <div class="topbar__greeting">-->
+<!--            Witaj <span th:text="${welcomeName}">Imię</span>, zdrowego dnia!-->
+<!--        </div>-->
 
-        <nav class="nav">
-            <a class="nav__link" th:href="@{/home}">Strona główna</a>
-            <a class="nav__link" th:href="@{/profile}">Profil</a>
-            <a class="nav__link" th:href="@{/status}">Status &amp; przegląd</a>
-            <a class="nav__link nav__link--active" th:href="@{/medications}">Zarządzanie lekami</a>
-            <a class="nav__link" th:href="@{/doctor}" sec:authorize="hasRole('DOCTOR')">Dla lekarza</a>
-        </nav>
-    </div>
-</header>
+<!--        <nav class="nav">-->
+<!--            <a class="nav__link" th:href="@{/home}">Strona główna</a>-->
+<!--            <a class="nav__link" th:href="@{/profile}">Profil</a>-->
+<!--            <a class="nav__link" th:href="@{/status}">Status &amp; przegląd</a>-->
+<!--            <a class="nav__link nav__link&#45;&#45;active" th:href="@{/medications}">Zarządzanie lekami</a>-->
+<!--            <a class="nav__link" th:href="@{/doctor}" sec:authorize="hasRole('DOCTOR')">Dla lekarza</a>-->
+<!--        </nav>-->
+<!--    </div>-->
+<!--</header>-->
 
-<main class="meds" th:classappend="${targetPatientId != null} ? ' meds--doctor' : ''">
-    <div class="container meds__container">
-        <div class="meds-shell">
-            <section class="meds-panel">
-                <div class="meds-panel__inner">
-                    <div class="meds-grid" th:with="sel=${selected != null ? selected : (!#lists.isEmpty(medications) ? medications[0] : null)}, canEditSel=${sel != null and (canEditSelected == true)}">
-                        <aside class="meds-left">
-                            <div class="meds-left__top">
-                                <div class="meds-left__select">Przyjmowane leki</div>
-                            </div>
+<!--<main class="meds" th:classappend="${targetPatientId != null} ? ' meds&#45;&#45;doctor' : ''">-->
+<!--    <div class="container meds__container">-->
+<!--        <div class="meds-shell">-->
+<!--            <section class="meds-panel">-->
+<!--                <div class="meds-panel__inner">-->
+<!--                    <div class="meds-grid" th:with="sel=${selected != null ? selected : (!#lists.isEmpty(medications) ? medications[0] : null)}, canEditSel=${sel != null and (canEditSelected == true)}">-->
+<!--                        <aside class="meds-left">-->
+<!--                            <div class="meds-left__top">-->
+<!--                                <div class="meds-left__select">Przyjmowane leki</div>-->
+<!--                            </div>-->
 
-                            <div class="meds-list" id="medList">
-                                <div class="meds-empty meds-empty--left" th:if="${#lists.isEmpty(medications)}">
-                                    Brak leków do wyświetlenia.
-                                </div>
+<!--                            <div class="meds-list" id="medList">-->
+<!--                                <div class="meds-empty meds-empty&#45;&#45;left" th:if="${#lists.isEmpty(medications)}">-->
+<!--                                    Brak leków do wyświetlenia.-->
+<!--                                </div>-->
 
-                                <a class="meds-item"
-                                   th:each="m : ${medications}"
-                                   th:href="@{/medications(id=${m.id})}"
-                                   th:classappend="${sel != null and sel.id == m.id} ? ' meds-item--active' : ''">
+<!--                                <a class="meds-item"-->
+<!--                                   th:each="m : ${medications}"-->
+<!--                                   th:href="@{/medications(id=${m.id})}"-->
+<!--                                   th:classappend="${sel != null and sel.id == m.id} ? ' meds-item&#45;&#45;active' : ''">-->
 
-                                    <div class="meds-item__left">
-                                        <span class="meds-item__name" th:text="${m.name}">nazwa leku</span>
-                                        <span class="meds-item__lock" th:if="${editableMedicationIds != null and !editableMedicationIds.contains(m.id)}" aria-label="Zablokowane" title="Nie masz uprawnień do edycji">🔒</span>
-                                    </div>
+<!--                                    <div class="meds-item__left">-->
+<!--                                        <span class="meds-item__name" th:text="${m.name}">nazwa leku</span>-->
+<!--                                        <span class="meds-item__lock" th:if="${editableMedicationIds != null and !editableMedicationIds.contains(m.id)}" aria-label="Zablokowane" title="Nie masz uprawnień do edycji">🔒</span>-->
+<!--                                    </div>-->
 
-                                    <span class="meds-dot"
-                                          th:classappend="${m.status == 'TAKEN'} ? ' meds-dot--green' :
-                                                         (${m.status == 'NOT_REQUIRED'} ? ' meds-dot--blue' : ' meds-dot--red')"
-                                          aria-hidden="true"></span>
+<!--                                    <span class="meds-dot"-->
+<!--                                          th:classappend="${m.status == 'TAKEN'} ? ' meds-dot&#45;&#45;green' :-->
+<!--                                                         (${m.status == 'NOT_REQUIRED'} ? ' meds-dot&#45;&#45;blue' : ' meds-dot&#45;&#45;red')"-->
+<!--                                          aria-hidden="true"></span>-->
 
-                                    <!-- Przycisk "Usuń" -->
-                                    <form th:action="@{/medications/delete}" method="post" style="display:inline;">
-                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                                        <input type="hidden" name="medicationId" th:value="${m.id}"/>
-                                        <button type="submit" class="btn btn--outline btn--red" th:if="${!m.createdByDoctor}" title="Usuń lek">Usuń</button>
-                                    </form>
+<!--                                    &lt;!&ndash; Przycisk "Usuń" &ndash;&gt;-->
+<!--                                    <form th:action="@{/medications/delete}" method="post" style="display:inline;">-->
+<!--                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+<!--                                        <input type="hidden" name="medicationId" th:value="${m.id}"/>-->
+<!--                                        <button type="submit" class="btn btn&#45;&#45;outline btn&#45;&#45;red" th:if="${!m.createdByDoctor}" title="Usuń lek">Usuń</button>-->
+<!--                                    </form>-->
 
-                                </a>
-                            </div>
+<!--                                </a>-->
+<!--                            </div>-->
 
-                            <!-- DODAJ LEK (self albo pacjentowi) -->
-                            <div class="meds-left__bottom">
-                                <button id="openAddMedModal" class="meds-left__add" type="button"
-                                        th:text="${targetPatientId != null} ? 'Dodaj lek pacjentowi' : 'Dodaj nowy lek'">
-                                    Dodaj nowy lek
-                                </button>
-                            </div>
-                        </aside>
+<!--                            &lt;!&ndash; DODAJ LEK (self albo pacjentowi) &ndash;&gt;-->
+<!--                            <div class="meds-left__bottom">-->
+<!--                                <button id="openAddMedModal" class="meds-left__add" type="button"-->
+<!--                                        th:text="${targetPatientId != null} ? 'Dodaj lek pacjentowi' : 'Dodaj nowy lek'">-->
+<!--                                    Dodaj nowy lek-->
+<!--                                </button>-->
+<!--                            </div>-->
+<!--                        </aside>-->
 
-                        <section class="meds-right">
-                            <div class="meds-right__header" th:if="${targetPatientId != null}">
-                                <a class="meds-back" th:href="@{/doctor}">← Powrót do pacjentów</a>
-                                <div class="meds-patient">
-                                    Pacjent: <span th:text="${userFullName}">Jan Kowalski</span>
-                                </div>
-                            </div>
+<!--                        <section class="meds-right">-->
+<!--                            <div class="meds-right__header" th:if="${targetPatientId != null}">-->
+<!--                                <a class="meds-back" th:href="@{/doctor}">← Powrót do pacjentów</a>-->
+<!--                                <div class="meds-patient">-->
+<!--                                    Pacjent: <span th:text="${userFullName}">Jan Kowalski</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
 
-                            <div class="meds-empty" th:if="${sel == null}">
-                                Brak leków do wyświetlenia.
-                            </div>
+<!--                            <div class="meds-empty" th:if="${sel == null}">-->
+<!--                                Brak leków do wyświetlenia.-->
+<!--                            </div>-->
 
-                            <div class="meds-right__body" th:if="${sel != null}">
-                                <h3 class="meds-right__title" th:text="${sel.name}">Nazwa leku</h3>
+<!--                            <div class="meds-right__body" th:if="${sel != null}">-->
+<!--                                <h3 class="meds-right__title" th:text="${sel.name}">Nazwa leku</h3>-->
 
-                                <form id="medForm" class="meds-form" method="post" th:action="@{/medications/save}">
-                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                                    <input type="hidden" name="id" th:value="${sel.id}"/>
+<!--                                <form id="medForm" class="meds-form" method="post" th:action="@{/medications/save}">-->
+<!--                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+<!--                                    <input type="hidden" name="id" th:value="${sel.id}"/>-->
 
-                                    <input type="hidden" name="patientId"
-                                           th:if="${targetPatientId != null}"
-                                           th:value="${targetPatientId}"/>
+<!--                                    <input type="hidden" name="patientId"-->
+<!--                                           th:if="${targetPatientId != null}"-->
+<!--                                           th:value="${targetPatientId}"/>-->
 
-                                    <!-- VIEW -->
-                                    <div class="meds-view">
-                                        <div class="meds-box">
-                                            <div class="meds-box__label">Dawka</div>
-                                            <div class="meds-box__value" th:text="${sel.dose != null ? sel.dose : '-'}">1 tabletka</div>
-                                        </div>
+<!--                                    &lt;!&ndash; VIEW &ndash;&gt;-->
+<!--                                    <div class="meds-view">-->
+<!--                                        <div class="meds-box">-->
+<!--                                            <div class="meds-box__label">Dawka</div>-->
+<!--                                            <div class="meds-box__value" th:text="${sel.dose != null ? sel.dose : '-'}">1 tabletka</div>-->
+<!--                                        </div>-->
 
-                                        <div class="meds-box">
-                                            <div class="meds-box__label">Godzina<br/>przyjęcia</div>
-                                            <div class="meds-box__value" th:text="${sel.intakeTime != null ? #temporals.format(sel.intakeTime, 'HH:mm') : '--:--'}">15:00</div>
-                                        </div>
+<!--                                        <div class="meds-box">-->
+<!--                                            <div class="meds-box__label">Godzina<br/>przyjęcia</div>-->
+<!--                                            <div class="meds-box__value" th:text="${sel.intakeTime != null ? #temporals.format(sel.intakeTime, 'HH:mm') : '&#45;&#45;:&#45;&#45;'}">15:00</div>-->
+<!--                                        </div>-->
 
-                                        <!-- Data rozpoczęcia i zakończenia terapii -->
-                                        <div class="meds-box">
-                                            <div class="meds-box__label">Data rozpoczęcia terapii</div>
-                                            <div class="meds-box__value" th:text="${sel.therapyStartDate}">01.01.2026</div>
-                                        </div>
-                                        <div class="meds-box">
-                                            <div class="meds-box__label">Data zakończenia terapii</div>
-                                            <div class="meds-box__value" th:text="${sel.therapyEndDate}">01.01.2026</div>
-                                        </div>
-                                    </div>
+<!--                                        &lt;!&ndash; Data rozpoczęcia i zakończenia terapii &ndash;&gt;-->
+<!--                                        <div class="meds-box">-->
+<!--                                            <div class="meds-box__label">Data rozpoczęcia terapii</div>-->
+<!--                                            <div class="meds-box__value" th:text="${sel.therapyStartDate}">01.01.2026</div>-->
+<!--                                        </div>-->
+<!--                                        <div class="meds-box">-->
+<!--                                            <div class="meds-box__label">Data zakończenia terapii</div>-->
+<!--                                            <div class="meds-box__value" th:text="${sel.therapyEndDate}">01.01.2026</div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
 
-                                    <!-- EDIT -->
-                                    <div class="meds-edit">
-                                        <div class="meds-edit__row">
-                                            <label class="meds-edit__label">Nazwa leku:</label>
-                                            <input class="meds-edit__input" type="text" name="name"
-                                                   th:value="${sel.name}" data-editable="1">
-                                        </div>
+<!--                                    &lt;!&ndash; EDIT &ndash;&gt;-->
+<!--                                    <div class="meds-edit">-->
+<!--                                        <div class="meds-edit__row">-->
+<!--                                            <label class="meds-edit__label">Nazwa leku:</label>-->
+<!--                                            <input class="meds-edit__input" type="text" name="name"-->
+<!--                                                   th:value="${sel.name}" data-editable="1">-->
+<!--                                        </div>-->
 
-                                        <div class="meds-edit__row">
-                                            <label class="meds-edit__label">Przyjmowana dawka:</label>
-                                            <input class="meds-edit__input" type="text" name="dose"
-                                                   th:value="${sel.dose}" data-editable="1">
-                                        </div>
+<!--                                        <div class="meds-edit__row">-->
+<!--                                            <label class="meds-edit__label">Przyjmowana dawka:</label>-->
+<!--                                            <input class="meds-edit__input" type="text" name="dose"-->
+<!--                                                   th:value="${sel.dose}" data-editable="1">-->
+<!--                                        </div>-->
 
-                                        <div class="meds-edit__row">
-                                            <label class="meds-edit__label">Godzina przyjęcia:</label>
-                                            <input class="meds-edit__input" type="time" name="intakeTime"
-                                                   th:value="${sel.intakeTime != null ? #temporals.format(sel.intakeTime, 'HH:mm') : ''}" data-editable="1">
-                                        </div>
+<!--                                        <div class="meds-edit__row">-->
+<!--                                            <label class="meds-edit__label">Godzina przyjęcia:</label>-->
+<!--                                            <input class="meds-edit__input" type="time" name="intakeTime"-->
+<!--                                                   th:value="${sel.intakeTime != null ? #temporals.format(sel.intakeTime, 'HH:mm') : ''}" data-editable="1">-->
+<!--                                        </div>-->
 
-                                        <!-- Edycja daty rozpoczęcia i zakończenia terapii -->
-                                        <div class="meds-edit__row" th:if="${canEditSel}">
-                                            <label class="meds-edit__label">Data rozpoczęcia terapii:</label>
-                                            <input class="meds-edit__input" type="date" name="therapyStartDate"
-                                                   th:value="${sel.therapyStartDate}">
-                                        </div>
+<!--                                        &lt;!&ndash; Edycja daty rozpoczęcia i zakończenia terapii &ndash;&gt;-->
+<!--                                        <div class="meds-edit__row" th:if="${canEditSel}">-->
+<!--                                            <label class="meds-edit__label">Data rozpoczęcia terapii:</label>-->
+<!--                                            <input class="meds-edit__input" type="date" name="therapyStartDate"-->
+<!--                                                   th:value="${sel.therapyStartDate}">-->
+<!--                                        </div>-->
 
-                                        <div class="meds-edit__row" th:if="${canEditSel}">
-                                            <label class="meds-edit__label">Data zakończenia terapii:</label>
-                                            <input class="meds-edit__input" type="date" name="therapyEndDate"
-                                                   th:value="${sel.therapyEndDate}">
-                                        </div>
-                                    </div>
+<!--                                        <div class="meds-edit__row" th:if="${canEditSel}">-->
+<!--                                            <label class="meds-edit__label">Data zakończenia terapii:</label>-->
+<!--                                            <input class="meds-edit__input" type="date" name="therapyEndDate"-->
+<!--                                                   th:value="${sel.therapyEndDate}">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
 
-                                    <!-- META -->
-                                    <div class="meds-meta">
-                                        <div class="meds-meta__row">
-                                            <span class="meds-meta__label">Status:</span>
-                                            <span class="meds-meta__value" th:text="${sel.status}">SCHEDULED</span>
-                                        </div>
-                                    </div>
+<!--                                    &lt;!&ndash; META &ndash;&gt;-->
+<!--                                    <div class="meds-meta">-->
+<!--                                        <div class="meds-meta__row">-->
+<!--                                            <span class="meds-meta__label">Status:</span>-->
+<!--                                            <span class="meds-meta__value" th:text="${sel.status}">SCHEDULED</span>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
 
-                                    <!-- WARNING -->
-                                    <div class="meds-warning" th:if="${!canEditSel}">
-                                        <span class="meds-warning__icon">❗</span>
-                                        <span>Brak uprawnień do edycji tego leku</span>
-                                        <span class="meds-warning__icon">❗</span>
-                                    </div>
+<!--                                    &lt;!&ndash; WARNING &ndash;&gt;-->
+<!--                                    <div class="meds-warning" th:if="${!canEditSel}">-->
+<!--                                        <span class="meds-warning__icon">❗</span>-->
+<!--                                        <span>Brak uprawnień do edycji tego leku</span>-->
+<!--                                        <span class="meds-warning__icon">❗</span>-->
+<!--                                    </div>-->
 
-                                    <!-- akcje -->
-                                    <div class="meds-actions">
-                                        <div class="meds-actions__left">
-                                            <button id="cancelBtn" class="meds-btn meds-btn--ghost" type="button" hidden>
-                                                Anuluj
-                                            </button>
-                                            <button id="saveBtn" class="meds-btn meds-btn--primary" type="submit" hidden>
-                                                Zapisz
-                                            </button>
-                                        </div>
+<!--                                    &lt;!&ndash; akcje &ndash;&gt;-->
+<!--                                    <div class="meds-actions">-->
+<!--                                        <div class="meds-actions__left">-->
+<!--                                            <button id="cancelBtn" class="meds-btn meds-btn&#45;&#45;ghost" type="button" hidden>-->
+<!--                                                Anuluj-->
+<!--                                            </button>-->
+<!--                                            <button id="saveBtn" class="meds-btn meds-btn&#45;&#45;primary" type="submit" hidden>-->
+<!--                                                Zapisz-->
+<!--                                            </button>-->
+<!--                                        </div>-->
 
-                                        <div class="meds-actions__right">
-                                            <button id="editBtn" class="meds-btn meds-btn--soft" type="button"
-                                                    th:if="${canEditSel}">
-                                                Edytuj
-                                            </button>
-                                        </div>
-                                    </div>
+<!--                                        <div class="meds-actions__right">-->
+<!--                                            <button id="editBtn" class="meds-btn meds-btn&#45;&#45;soft" type="button"-->
+<!--                                                    th:if="${canEditSel}">-->
+<!--                                                Edytuj-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
 
-                                    <input type="hidden" id="canEditSelected" th:value="${canEditSel}"/>
-                                </form>
-                            </div>
-                        </section>
+<!--                                    <input type="hidden" id="canEditSelected" th:value="${canEditSel}"/>-->
+<!--                                </form>-->
+<!--                            </div>-->
+<!--                        </section>-->
 
-                    </div>
-                </div>
-            </section>
-        </div>
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </section>-->
+<!--        </div>-->
 
-    </div>
-</main>
+<!--    </div>-->
+<!--</main>-->
 
-<script>
-    (() => {
-        const form = document.getElementById('medForm');
-        if (form) {
-            const canEdit = (document.getElementById('canEditSelected')?.value === 'true');
-            const editBtn = document.getElementById('editBtn');
-            const cancelBtn = document.getElementById('cancelBtn');
-            const saveBtn = document.getElementById('saveBtn');
-            const fields = [...form.querySelectorAll('[data-editable="1"]')];
-            const initial = new Map(fields.map(el => [el.name, el.value]));
+<!--<script>-->
+<!--    (() => {-->
+<!--        const form = document.getElementById('medForm');-->
+<!--        if (form) {-->
+<!--            const canEdit = (document.getElementById('canEditSelected')?.value === 'true');-->
+<!--            const editBtn = document.getElementById('editBtn');-->
+<!--            const cancelBtn = document.getElementById('cancelBtn');-->
+<!--            const saveBtn = document.getElementById('saveBtn');-->
+<!--            const fields = [...form.querySelectorAll('[data-editable="1"]')];-->
+<!--            const initial = new Map(fields.map(el => [el.name, el.value]));-->
 
-            function setEditing(on) {
-                form.classList.toggle('is-editing', on);
-                fields.forEach(el => el.disabled = !on);
-                if (editBtn) editBtn.hidden = on;
-                if (cancelBtn) cancelBtn.hidden = !on;
-                if (saveBtn) saveBtn.hidden = !on;
-            }
+<!--            function setEditing(on) {-->
+<!--                form.classList.toggle('is-editing', on);-->
+<!--                fields.forEach(el => el.disabled = !on);-->
+<!--                if (editBtn) editBtn.hidden = on;-->
+<!--                if (cancelBtn) cancelBtn.hidden = !on;-->
+<!--                if (saveBtn) saveBtn.hidden = !on;-->
+<!--            }-->
 
-            fields.forEach(el => el.disabled = true);
+<!--            fields.forEach(el => el.disabled = true);-->
 
-            if (canEdit) {
-                setEditing(false);
-                editBtn?.addEventListener('click', () => setEditing(true));
-                cancelBtn?.addEventListener('click', () => {
-                    fields.forEach(el => el.value = initial.get(el.name) ?? '');
-                    setEditing(false);
-                });
-            }
-        }
-    })();
-</script>
+<!--            if (canEdit) {-->
+<!--                setEditing(false);-->
+<!--                editBtn?.addEventListener('click', () => setEditing(true));-->
+<!--                cancelBtn?.addEventListener('click', () => {-->
+<!--                    fields.forEach(el => el.value = initial.get(el.name) ?? '');-->
+<!--                    setEditing(false);-->
+<!--                });-->
+<!--            }-->
+<!--        }-->
+<!--    })();-->
+<!--</script>-->
 
-</body>
-</html>
+<!--</body>-->
+<!--</html>-->
