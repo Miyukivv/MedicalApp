@@ -4,9 +4,9 @@
     overflow: hidden;
 }
 
-body.page-bg .meds {
-    background: transparent;
-}
+/*body.page-bg .meds {*/
+/*    background: transparent;*/
+/*}*/
 
 body.page-bg .meds {
     background: rgba(83, 98, 158, .18);
@@ -415,7 +415,7 @@ body.page-bg .meds {
 
 /*  DOCTOR MODE  */
 .meds.meds--doctor {
-    background: linear-gradient(180deg, rgba(83, 98, 158158, .45) 0%, rgba(46, 36, 72, .92) 100%);
+    background: linear-gradient(180deg, rgba(83, 98, 158, .45) 0%, rgba(46, 36, 72, .92) 100%);
 }
 
 /* jeśli page-bg, to też doctor-mode ma być transparent (żeby zdjęcie było widać) */
