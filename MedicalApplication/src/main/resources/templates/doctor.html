@@ -1,156 +1,8 @@
-<!--<!doctype html>-->
-<!--<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8"/>-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1"/>-->
-<!--    <title>Aplikacja medyczna - Dla lekarza</title>-->
-<!--    <link rel="stylesheet" th:href="@{/css/style.css}">-->
-<!--    <link rel="stylesheet" th:href="@{/css/doctor.css}">-->
-<!--</head>-->
-<!--<body class="page-bg">-->
-
-<!--<header class="topbar">-->
-<!--    <div class="container topbar__inner">-->
-<!--        <a class="brand" th:href="@{/home}">-->
-<!--            <img class="brand__logo" th:src="@{/img/logo.jpg}" alt="YourMed" />-->
-<!--        </a>-->
-
-<!--        <div class="topbar__greeting">-->
-<!--            Witaj <span th:text="${welcomeName}">Imię</span>, zdrowego dnia!-->
-<!--        </div>-->
-
-<!--        <nav class="nav">-->
-<!--            <a class="nav__link" th:href="@{/home}">Strona główna</a>-->
-<!--            <a class="nav__link" th:href="@{/profile}">Profil</a>-->
-<!--            <a class="nav__link" th:href="@{/status}">Status &amp; przegląd</a>-->
-<!--            <a class="nav__link" th:href="@{/medications}">Zarządzanie lekami</a>-->
-<!--            <a class="nav__link nav__link&#45;&#45;active" th:href="@{/doctor}" sec:authorize="hasRole('DOCTOR')">Dla lekarza</a>-->
-<!--        </nav>-->
-<!--    </div>-->
-<!--</header>-->
-
-<!--<main class="doc">-->
-<!--    <div class="container doc__container">-->
-<!--        <section class="doc-panel">-->
-<!--            <div class="doc-panel__inner">-->
-<!--                <div class="doc-top">-->
-<!--                    <div class="doc-title-pill">Lista pacjentów</div>-->
-<!--                    <button class="doc-add-btn" type="button" id="openAddPatient">-->
-<!--                        + Dodaj pacjenta-->
-<!--                    </button>-->
-<!--                </div>-->
-
-<!--                <div class="doc-table">-->
-<!--                    <div class="doc-head">-->
-<!--                        <div class="doc-pill doc-pill&#45;&#45;small">Id</div>-->
-<!--                        <div class="doc-pill">Imię i nazwisko</div>-->
-<!--                        <div class="doc-pill">Ostatnia wizyta</div>-->
-<!--                        <div class="doc-pill">Przyjmowane leki</div>-->
-<!--                    </div>-->
-
-<!--                    <div class="doc-body" th:if="${!#lists.isEmpty(patients)}">-->
-<!--                        <div class="doc-row"-->
-<!--                             th:each="p : ${patients}"-->
-<!--                             th:attr="data-pid=${p.id}, data-last=${p.lastVisitIso}">-->
-<!--                            <div class="doc-cell doc-cell&#45;&#45;id" th:text="${p.id}">1</div>-->
-<!--                            <div class="doc-cell" th:text="${p.fullName}">Jan Kowalski</div>-->
-<!--                            <div class="doc-cell">-->
-<!--                                <span class="doc-last-text" th:text="${p.lastVisitDisplay}">-</span>-->
-<!--                                <input class="doc-last-input" type="date" th:value="${p.lastVisitIso}" disabled>-->
-<!--                            </div>-->
-<!--                            <div class="doc-cell">-->
-<!--                                <a class="doc-link" th:href="@{/medications(patientId=${p.id})}">-->
-<!--                                    Lista leków-->
-<!--                                </a>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </section>-->
-<!--    </div>-->
-<!--</main>-->
-
-<!--<script>-->
-<!--    (() => {-->
-<!--        // ===== wybór pacjenta + edycja lastVisit =====-->
-<!--        const rows = [...document.querySelectorAll('.doc-row')];-->
-<!--        const editBtn = document.getElementById('editBtn');-->
-<!--        const cancelBtn = document.getElementById('cancelBtn');-->
-<!--        const saveBtn = document.getElementById('saveBtn');-->
-
-<!--        const visitForm = document.getElementById('visitForm');-->
-<!--        const visitPatientId = document.getElementById('visitPatientId');-->
-<!--        const visitLastVisit = document.getElementById('visitLastVisit');-->
-
-<!--        let selectedRow = null;-->
-<!--        let initialDate = '';-->
-
-<!--        function clearSelection(){-->
-<!--            rows.forEach(r => r.classList.remove('is-active'));-->
-<!--            selectedRow = null;-->
-<!--            editBtn.disabled = true;-->
-<!--        }-->
-
-<!--        function selectRow(row){-->
-<!--            rows.forEach(r => r.classList.remove('is-active'));-->
-<!--            row.classList.add('is-active');-->
-<!--            selectedRow = row;-->
-<!--            editBtn.disabled = false;-->
-
-<!--            const input = row.querySelector('.doc-last-input');-->
-<!--            initialDate = input?.value ?? '';-->
-<!--        }-->
-
-<!--        function setEditing(on){-->
-<!--            if (!selectedRow) return;-->
-<!--            selectedRow.classList.toggle('is-editing', on);-->
-
-<!--            const input = selectedRow.querySelector('.doc-last-input');-->
-<!--            const text = selectedRow.querySelector('.doc-last-text');-->
-<!--            if (input) input.disabled = !on;-->
-
-<!--            if (text) text.style.display = on ? 'none' : '';-->
-<!--            if (input) input.style.display = on ? '' : 'none';-->
-
-<!--            editBtn.hidden = on;-->
-<!--            cancelBtn.hidden = !on;-->
-<!--            saveBtn.hidden = !on;-->
-<!--        }-->
-
-<!--        rows.forEach(r => {-->
-<!--            r.addEventListener('click', () => selectRow(r));-->
-<!--        });-->
-
-<!--        editBtn?.addEventListener('click', () => setEditing(true));-->
-
-<!--        cancelBtn?.addEventListener('click', () => {-->
-<!--            if (!selectedRow) return;-->
-<!--            const input = selectedRow.querySelector('.doc-last-input');-->
-<!--            const text = selectedRow.querySelector('.doc-last-text');-->
-<!--            if (input) input.value = initialDate;-->
-<!--            if (text) text.textContent = initialDate ? initialDate : '-';-->
-<!--            setEditing(false);-->
-<!--        });-->
-
-<!--        saveBtn?.addEventListener('click', () => {-->
-<!--            if (!selectedRow) return;-->
-<!--            const pid = selectedRow.getAttribute('data-pid');-->
-<!--            const input = selectedRow.querySelector('.doc-last-input');-->
-<!--            const val = input?.value ?? '';-->
-
-<!--            visitPatientId.value = pid;-->
-<!--            visitLastVisit.value = val;-->
-<!--            visitForm.submit();-->
-<!--        });-->
-<!--    })();-->
-<!--</script>-->
-
-<!--</body>-->
-<!--</html>-->
-
 <!doctype html>
-<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="pl"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -158,6 +10,7 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/doctor.css}">
 </head>
+
 <body class="page-bg">
 
 <header class="topbar">
@@ -177,6 +30,24 @@
             <a class="nav__link" th:href="@{/medications}">Zarządzanie lekami</a>
             <a class="nav__link nav__link--active" th:href="@{/doctor}" sec:authorize="hasRole('DOCTOR')">Dla lekarza</a>
         </nav>
+
+        <!-- ✅ Ustawienia (tak jak w medications.html) -->
+        <div class="user-menu">
+            <button class="user-menu__btn" type="button" aria-haspopup="true" aria-expanded="false">
+                <span class="user-menu__label">Ustawienia</span>
+                <span class="user-menu__icon" aria-hidden="true">⚙️</span>
+            </button>
+
+            <div class="user-menu__dropdown" role="menu" aria-label="Ustawienia konta">
+                <form th:action="@{/logout}" method="post" class="user-menu__logout">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="user-menu__item user-menu__item--danger user-menu__btnlink">
+                        Wyloguj się
+                    </button>
+                </form>
+            </div>
+        </div>
+
     </div>
 </header>
 
@@ -184,8 +55,10 @@
     <div class="container doc__container">
         <section class="doc-panel">
             <div class="doc-panel__inner">
+
                 <div class="doc-top">
                     <div class="doc-title-pill">Lista pacjentów</div>
+
                     <button class="doc-add-btn" type="button" id="openAddPatient">
                         + Dodaj pacjenta
                     </button>
@@ -199,16 +72,22 @@
                         <div class="doc-pill">Przyjmowane leki</div>
                     </div>
 
+                    <div class="doc-empty" th:if="${#lists.isEmpty(patients)}">
+                        Brak przypisanych pacjentów. Kliknij „Dodaj pacjenta”.
+                    </div>
+
                     <div class="doc-body" th:if="${!#lists.isEmpty(patients)}">
                         <div class="doc-row"
                              th:each="p : ${patients}"
                              th:attr="data-pid=${p.id}, data-last=${p.lastVisitIso}">
                             <div class="doc-cell doc-cell--id" th:text="${p.id}">1</div>
                             <div class="doc-cell" th:text="${p.fullName}">Jan Kowalski</div>
+
                             <div class="doc-cell">
                                 <span class="doc-last-text" th:text="${p.lastVisitDisplay}">-</span>
                                 <input class="doc-last-input" type="date" th:value="${p.lastVisitIso}" disabled>
                             </div>
+
                             <div class="doc-cell">
                                 <a class="doc-link" th:href="@{/medications(patientId=${p.id})}">
                                     Lista leków
@@ -217,10 +96,50 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- ✅ przyciski edycji (zniknęły w nowej wersji) -->
+                <div class="doc-actions">
+                    <button id="editBtn" class="doc-btn" type="button" disabled>Edytuj</button>
+                    <button id="cancelBtn" class="doc-btn doc-btn--ghost" type="button" hidden>Anuluj</button>
+                    <button id="saveBtn" class="doc-btn doc-btn--primary" type="button" hidden>Zapisz</button>
+                </div>
+
+                <!-- ✅ ukryty formularz do zapisu lastVisit -->
+                <form id="visitForm" th:action="@{/doctor/patients/visit}" method="post" hidden>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <input type="hidden" name="patientId" id="visitPatientId">
+                    <input type="hidden" name="lastVisit" id="visitLastVisit">
+                </form>
+
             </div>
         </section>
     </div>
 </main>
+
+<!-- ✅ MODAL: Dodaj pacjenta -->
+<div id="addPatientModal" class="doc-modal" aria-hidden="true">
+    <div class="doc-modal__overlay" data-close></div>
+
+    <div class="doc-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="addPatientTitle">
+        <button class="doc-modal__close" type="button" data-close aria-label="Zamknij">&times;</button>
+        <h2 id="addPatientTitle" class="doc-modal__title">Dodaj pacjenta</h2>
+
+        <form class="doc-modal__form" th:action="@{/doctor/patients/add}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <div class="doc-modal__row">
+                <label class="doc-modal__label" for="patientEmail">Email pacjenta</label>
+                <input class="doc-modal__input" id="patientEmail" name="email" type="email" required
+                       placeholder="np. pacjent@wp.pl">
+            </div>
+
+            <div class="doc-modal__actions">
+                <button class="doc-modal__btn doc-modal__btn--ghost" type="button" data-close>Anuluj</button>
+                <button class="doc-modal__btn doc-modal__btn--primary" type="submit">Dodaj</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script>
     (() => {
@@ -236,17 +155,12 @@
         let selectedRow = null;
         let initialDate = '';
 
-        function clearSelection(){
-            rows.forEach(r => r.classList.remove('is-active'));
-            selectedRow = null;
-            editBtn.disabled = true;
-        }
-
         function selectRow(row){
             rows.forEach(r => r.classList.remove('is-active'));
             row.classList.add('is-active');
             selectedRow = row;
-            editBtn.disabled = false;
+
+            if (editBtn) editBtn.disabled = false;
 
             const input = row.querySelector('.doc-last-input');
             initialDate = input?.value ?? '';
@@ -254,45 +168,77 @@
 
         function setEditing(on){
             if (!selectedRow) return;
-            selectedRow.classList.toggle('is-editing', on);
 
             const input = selectedRow.querySelector('.doc-last-input');
             const text = selectedRow.querySelector('.doc-last-text');
-            if (input) input.disabled = !on;
 
+            if (input) input.disabled = !on;
             if (text) text.style.display = on ? 'none' : '';
             if (input) input.style.display = on ? '' : 'none';
 
-            editBtn.hidden = on;
-            cancelBtn.hidden = !on;
-            saveBtn.hidden = !on;
+            if (editBtn) editBtn.hidden = on;
+            if (cancelBtn) cancelBtn.hidden = !on;
+            if (saveBtn) saveBtn.hidden = !on;
         }
 
-        rows.forEach(r => {
-            r.addEventListener('click', () => selectRow(r));
-        });
+        rows.forEach(r => r.addEventListener('click', () => selectRow(r)));
 
         editBtn?.addEventListener('click', () => setEditing(true));
 
         cancelBtn?.addEventListener('click', () => {
             if (!selectedRow) return;
+
             const input = selectedRow.querySelector('.doc-last-input');
             const text = selectedRow.querySelector('.doc-last-text');
             if (input) input.value = initialDate;
             if (text) text.textContent = initialDate ? initialDate : '-';
+
             setEditing(false);
         });
 
         saveBtn?.addEventListener('click', () => {
-            if (!selectedRow) return;
+            if (!selectedRow || !visitForm) return;
+
             const pid = selectedRow.getAttribute('data-pid');
             const input = selectedRow.querySelector('.doc-last-input');
             const val = input?.value ?? '';
 
-            visitPatientId.value = pid;
-            visitLastVisit.value = val;
+            if (visitPatientId) visitPatientId.value = pid ?? '';
+            if (visitLastVisit) visitLastVisit.value = val;
+
             visitForm.submit();
         });
+
+        // domyślnie ukryj inputy daty w wierszach
+        rows.forEach(r => {
+            const input = r.querySelector('.doc-last-input');
+            if (input) input.style.display = 'none';
+        });
+
+        // ===== modal dodawania pacjenta =====
+        const openAdd = document.getElementById('openAddPatient');
+        const modal = document.getElementById('addPatientModal');
+        if (openAdd && modal) {
+            const closeTargets = modal.querySelectorAll('[data-close]');
+            const firstInput = modal.querySelector('input[name="email"]');
+
+            function openModal(){
+                modal.classList.add('is-open');
+                modal.setAttribute('aria-hidden', 'false');
+                firstInput?.focus();
+            }
+            function closeModal(){
+                modal.classList.remove('is-open');
+                modal.setAttribute('aria-hidden', 'true');
+                openAdd.focus();
+            }
+
+            openAdd.addEventListener('click', openModal);
+            closeTargets.forEach(el => el.addEventListener('click', closeModal));
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+            });
+        }
     })();
 </script>
 
