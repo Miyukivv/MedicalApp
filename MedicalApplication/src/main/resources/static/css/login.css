@@ -200,8 +200,11 @@
 }
 
 .login-link {
-    color: #473472;
+    /*color: #473472;*/
     font-weight: 700;
+
+    color: #ffffff;
+    cursor: default;
 }
 
 /* actions */
