@@ -141,6 +141,9 @@ public class MedicationService {
         target.setName(update.getName());
         target.setDose(update.getDose());
         target.setIntakeTime(update.getIntakeTime());
+
+        target.setTherapyStartDate(update.getTherapyStartDate());
+        target.setTherapyEndDate(update.getTherapyEndDate());
     }
 
     public Medication updateMedicationByDoctor(User doctor, Long medId, Medication update) {
