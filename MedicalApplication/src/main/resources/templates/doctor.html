@@ -39,6 +39,7 @@
             </button>
 
             <div class="user-menu__dropdown" role="menu" aria-label="Ustawienia konta">
+                <a class="user-menu__item" role="menuitem" href="/change-password">Zmień hasło</a>
                 <form th:action="@{/logout}" method="post" class="user-menu__logout">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <button type="submit" class="user-menu__item user-menu__item--danger user-menu__btnlink">

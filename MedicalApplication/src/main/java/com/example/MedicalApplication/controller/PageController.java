@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +28,7 @@ public class PageController {
     private final UserRepository userRepository;
     private final MedicationRepository medicationRepository;
     private final MedicationService medicationService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
     public String loginPage() {
@@ -117,4 +119,45 @@ public class PageController {
         return "redirect:/status";
     }
 
+    @GetMapping("/change-password")
+    public String changePasswordPage(Model model, Authentication authentication,
+                                     @RequestParam(required = false) Boolean changed) {
+        var user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+
+        model.addAttribute("welcomeName", user.getFirstName());
+        model.addAttribute("changed", changed != null && changed);
+
+        return "change-password";
+    }
+
+    @PostMapping("/change-password")
+    public String changePasswordSubmit(@RequestParam String oldPassword,
+                                       @RequestParam String newPassword,
+                                       @RequestParam String newPassword2,
+                                       Authentication authentication,
+                                       Model model) {
+
+        var user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+
+        // potrzebne, bo przy błędzie wracamy na widok, a nie redirect
+        model.addAttribute("welcomeName", user.getFirstName());
+
+        // 1) nowe hasła muszą być takie same
+        if (newPassword == null || !newPassword.equals(newPassword2)) {
+            model.addAttribute("error", "Nowe hasła nie są takie same.");
+            return "change-password";
+        }
+
+        // 2) stare hasło musi pasować do tego z bazy
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            model.addAttribute("error", "Stare hasło jest nieprawidłowe.");
+            return "change-password";
+        }
+
+        // 3) ustaw nowe hasło (zakodowane)
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        return "redirect:/change-password?changed=true";
+    }
 }
