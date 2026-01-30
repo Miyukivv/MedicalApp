@@ -1,5 +1,7 @@
 package com.example.MedicalApplication.controller;
 
+import com.example.MedicalApplication.dto.MedicineSuggestionDto;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -18,6 +20,7 @@ public class MedicineDatasetController {
 
     // Trzymamy nazwy w pamięci (szybko). Ładujemy raz.
     private volatile List<String> namesCache = null;
+    private volatile List<MedicineSuggestionDto> detailsCache = null;
 
     @GetMapping(value = "/suggest", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> suggest(
@@ -79,6 +82,103 @@ public class MedicineDatasetController {
                 namesCache = List.of();
                 return namesCache;
             }
+        }
+    }
+
+    @GetMapping(value = "/suggest-details", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<MedicineSuggestionDto> suggestDetails(
+            @RequestParam("q") String q,
+            @RequestParam(value = "limit", defaultValue = "30") int limit
+    ) {
+        String query = (q == null) ? "" : q.trim().toLowerCase(Locale.ROOT);
+        if (query.isEmpty()) return List.of();
+
+        int safeLimit = Math.max(1, Math.min(limit, 200));
+
+        return getDetails().stream()
+                .filter(d -> d.name != null && d.name.toLowerCase(Locale.ROOT).startsWith(query))
+                .limit(safeLimit)
+                .collect(Collectors.toList());
+    }
+
+    private List<MedicineSuggestionDto> getDetails() {
+        if (detailsCache != null) return detailsCache;
+
+        synchronized (this) {
+            if (detailsCache != null) return detailsCache;
+
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                    Objects.requireNonNull(
+                            getClass().getClassLoader().getResourceAsStream("data/medicine_dataset.csv"),
+                            "Nie znaleziono pliku: resources/data/medicine_dataset.csv"
+                    ),
+                    StandardCharsets.UTF_8
+            ))) {
+                CSVParser parser = CSVFormat.DEFAULT
+                        .builder()
+                        .setHeader()
+                        .setSkipHeaderRecord(true)
+                        .build()
+                        .parse(br);
+
+                // klucz: nazwa leku, wartość: dto (żeby uniknąć duplikatów)
+                Map<String, MedicineSuggestionDto> map = new LinkedHashMap<>();
+
+                for (CSVRecord r : parser) {
+                    String name = safeGet(r, "name");
+                    if (name == null) continue;
+
+                    String trimmed = name.trim();
+                    if (trimmed.isBlank()) continue;
+
+                    String uses = buildUsesSummary(r); // use0..use4 (max 2 rzeczy)
+
+                    map.putIfAbsent(trimmed, new MedicineSuggestionDto(trimmed, uses));
+                }
+
+                List<MedicineSuggestionDto> list = new ArrayList<>(map.values());
+                list.sort(Comparator.comparing(a -> a.name.toLowerCase(Locale.ROOT)));
+
+                detailsCache = list;
+
+                // przy okazji zasil namesCache, jeśli jeszcze go nie było
+                if (namesCache == null) {
+                    namesCache = list.stream().map(d -> d.name).collect(Collectors.toList());
+                }
+
+                return detailsCache;
+
+            } catch (Exception e) {
+                detailsCache = List.of();
+                if (namesCache == null) namesCache = List.of();
+                return detailsCache;
+            }
+        }
+    }
+
+    private String buildUsesSummary(CSVRecord r) {
+        List<String> uses = new ArrayList<>(5);
+
+        for (int i = 0; i <= 4; i++) {
+            String v = safeGet(r, "use" + i);
+            if (v != null) {
+                String t = v.trim();
+                if (!t.isBlank()) uses.add(t);
+            }
+        }
+
+        if (uses.isEmpty()) return "";
+
+        // Twoje wymaganie: jeśli jest więcej niż 1, pokaż 2 po przecinku
+        if (uses.size() >= 2) return uses.get(0) + ", " + uses.get(1);
+        return uses.get(0);
+    }
+
+    private String safeGet(CSVRecord r, String col) {
+        try {
+            return r.get(col);
+        } catch (IllegalArgumentException ex) {
+            return null;
         }
     }
 }

@@ -16,7 +16,7 @@
 <header class="topbar">
     <div class="container topbar__inner">
         <a class="brand" th:href="@{/home}">
-            <img class="brand__logo" th:src="@{/img/logo.jpg}" alt="YourMed" />
+            <img class="brand__logo" th:src="@{/img/logo.jpg}" alt="YourMed"/>
         </a>
 
         <div class="topbar__greeting">
@@ -75,9 +75,7 @@
                                      th:classappend="${sel != null and sel.id == m.id} ? ' meds-item-row--active' : ''">
 
                                     <a class="meds-item"
-                                       th:href="${targetPatientId != null}
-                                                ? @{/medications(id=${m.id}, patientId=${targetPatientId})}
-                                                : @{/medications(id=${m.id})}">
+                                       th:href="${targetPatientId != null} ? @{/medications(id=${m.id}, patientId=${targetPatientId})} : @{/medications(id=${m.id})}">
 
                                         <div class="meds-item__left">
                                             <span class="meds-item__name" th:text="${m.name}">nazwa leku</span>
@@ -98,10 +96,13 @@
                                           th:action="@{/medications/delete}"
                                           method="post"
                                           th:if="${editableMedicationIds != null and editableMedicationIds.contains(m.id)}">
-                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                        <input type="hidden" th:name="${_csrf.parameterName}"
+                                               th:value="${_csrf.token}"/>
                                         <input type="hidden" name="medicationId" th:value="${m.id}"/>
-                                        <input type="hidden" name="patientId" th:if="${targetPatientId != null}" th:value="${targetPatientId}"/>
-                                        <button type="submit" class="btn btn--outline btn--red" title="Usuń lek">Usuń</button>
+                                        <input type="hidden" name="patientId" th:if="${targetPatientId != null}"
+                                               th:value="${targetPatientId}"/>
+                                        <button type="submit" class="btn btn--outline btn--red" title="Usuń lek">Usuń
+                                        </button>
                                     </form>
 
                                 </div>
@@ -143,7 +144,8 @@
                                         <div class="meds-box">
                                             <div class="meds-box__label">Dawka</div>
                                             <div class="meds-box__value"
-                                                 th:text="${sel.dose != null ? sel.dose : '-'}">1 tabletka</div>
+                                                 th:text="${sel.dose != null ? sel.dose : '-'}">1 tabletka
+                                            </div>
                                         </div>
 
                                         <div class="meds-box">
@@ -157,13 +159,16 @@
                                         <div class="meds-box">
                                             <div class="meds-box__label">Data rozpoczęcia terapii</div>
                                             <div class="meds-box__value"
-                                                 th:text="${sel.therapyStartDate != null ? sel.therapyStartDate : '-'}">-</div>
+                                                 th:text="${sel.therapyStartDate != null ? sel.therapyStartDate : '-'}">
+                                                -
+                                            </div>
                                         </div>
 
                                         <div class="meds-box">
                                             <div class="meds-box__label">Data zakończenia terapii</div>
                                             <div class="meds-box__value"
-                                                 th:text="${sel.therapyEndDate != null ? sel.therapyEndDate : '-'}">-</div>
+                                                 th:text="${sel.therapyEndDate != null ? sel.therapyEndDate : '-'}">-
+                                            </div>
                                         </div>
                                     </div>
 
@@ -230,10 +235,12 @@
 
                                     <div class="meds-actions">
                                         <div class="meds-actions__left">
-                                            <button id="cancelBtn" class="meds-btn meds-btn--ghost" type="button" hidden>
+                                            <button id="cancelBtn" class="meds-btn meds-btn--ghost" type="button"
+                                                    hidden>
                                                 Anuluj
                                             </button>
-                                            <button id="saveBtn" class="meds-btn meds-btn--primary" type="submit" hidden>
+                                            <button id="saveBtn" class="meds-btn meds-btn--primary" type="submit"
+                                                    hidden>
                                                 Zapisz
                                             </button>
                                         </div>
@@ -282,9 +289,20 @@
                    th:if="${selected != null}"
                    th:value="${selected.id}"/>
 
-            <div class="meds-modal__row">
+            <div class="meds-modal__row meds-modal__row--suggest">
                 <label class="meds-modal__label" for="newMedName">Nazwa leku</label>
-                <input class="meds-modal__input" id="newMedName" name="name" type="text" required>
+
+                <input class="meds-modal__input"
+                       id="newMedName"
+                       name="name"
+                       type="text"
+                       required
+                       autocomplete="off"
+                       aria-autocomplete="list"
+                       aria-controls="newMedSuggest"
+                       aria-expanded="false">
+
+                <div id="newMedSuggest" class="meds-suggest" role="listbox" aria-label="Sugestie leków"></div>
             </div>
 
             <div class="meds-modal__row">
@@ -374,6 +392,106 @@
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
         });
+
+        // ===== sugestie leków w modalu (2 kolumny: nazwa + na co) =====
+        const nameInput = document.getElementById('newMedName');
+        const suggestBox = document.getElementById('newMedSuggest');
+
+        if (nameInput && suggestBox) {
+            let lastQuery = '';
+            let abortCtrl = null;
+
+            function openSuggest() {
+                suggestBox.classList.add('is-open');
+                nameInput.setAttribute('aria-expanded', 'true');
+            }
+
+            function closeSuggest() {
+                suggestBox.classList.remove('is-open');
+                suggestBox.innerHTML = '';
+                nameInput.setAttribute('aria-expanded', 'false');
+            }
+
+            function escapeHtml(s) {
+                return String(s ?? '').replace(/[&<>"']/g, c => ({
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+                }[c]));
+            }
+
+            async function loadSuggestions(q) {
+                if (abortCtrl) abortCtrl.abort();
+                abortCtrl = new AbortController();
+
+                const resp = await fetch(`/api/medicines/suggest-details?q=${encodeURIComponent(q)}&limit=30`, {
+                    signal: abortCtrl.signal
+                });
+
+                if (!resp.ok) return [];
+                return await resp.json(); // [{name, uses}, ...]
+            }
+
+            function render(list, q) {
+                // Twoje wymaganie: brak dopasowań => znika
+                if (!list || list.length === 0) {
+                    closeSuggest();
+                    return;
+                }
+
+                const qLower = q.toLowerCase();
+
+                suggestBox.innerHTML = list.map(it => {
+                    const safeName = escapeHtml(it.name);
+                    const safeUses = escapeHtml(it.uses);
+
+                    const lower = String(it.name).toLowerCase();
+                    const nameHtml = lower.startsWith(qLower)
+                        ? `<strong>${safeName.slice(0, q.length)}</strong>${safeName.slice(q.length)}`
+                        : safeName;
+
+                    return `
+              <button type="button" class="meds-suggest__item" role="option" data-value="${safeName}">
+                <span class="meds-suggest__name">${nameHtml}</span>
+                <span class="meds-suggest__uses" title="${safeUses}">${safeUses || ''}</span>
+              </button>
+            `;
+                }).join('');
+
+                openSuggest();
+            }
+
+            nameInput.addEventListener('input', async () => {
+                const q = nameInput.value.trim();
+                if (q.length < 1) {
+                    closeSuggest();
+                    return;
+                }
+                if (q === lastQuery) return;
+                lastQuery = q;
+
+                try {
+                    const list = await loadSuggestions(q);
+                    render(list, q);
+                } catch (e) {
+                    if (e.name !== 'AbortError') closeSuggest();
+                }
+            });
+
+            suggestBox.addEventListener('click', (e) => {
+                const btn = e.target.closest('.meds-suggest__item');
+                if (!btn) return;
+                nameInput.value = btn.getAttribute('data-value') || '';
+                closeSuggest();
+                nameInput.focus();
+            });
+
+            nameInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeSuggest();
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.meds-modal__row--suggest')) closeSuggest();
+            });
+        }
     })();
 </script>
 

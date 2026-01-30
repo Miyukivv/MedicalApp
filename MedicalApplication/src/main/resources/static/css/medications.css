@@ -703,3 +703,72 @@ body.page-bg .meds.meds--doctor {
   background: rgba(255,255,255,.10);
   color: rgba(255,255,255,.92);
 }
+
+/* ===== Sugestie leków w modalu (2 kolumny) ===== */
+.meds-modal__row--suggest { position: relative; }
+
+.meds-suggest{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 8px);
+    z-index: 100000;
+
+    display: none;
+    max-height: 260px;
+    overflow: auto;
+
+    border-radius: 14px;
+    padding: 8px;
+
+    background: rgba(20, 12, 38, 0.65);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    border: 1px solid rgba(255,255,255,.18);
+    box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+}
+.meds-suggest.is-open{ display: block; }
+
+.meds-suggest__item{
+    width: 100%;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 10px;
+
+    padding: 10px 12px;
+    border-radius: 12px;
+
+    color: #fff;
+    text-align: left;
+    font-weight: 800;
+}
+.meds-suggest__item:hover,
+.meds-suggest__item:focus{
+    outline: none;
+    background: rgba(255,255,255,.12);
+}
+
+.meds-suggest__name{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.meds-suggest__uses{
+    text-align: right;
+    opacity: .88;
+    font-weight: 700;
+    font-size: 13px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.meds-suggest__name strong{
+    color: #D6F4ED;
+    font-weight: 900;
+}
