@@ -76,7 +76,6 @@ public class MedicationService {
                 .orElseThrow(() -> new RuntimeException("Medication not found"));
     }
 
-    //Pacjent może oznaczyć lek jako przyjęty (nawet jeśli lek jest od lekarza)
     @Transactional
     public Medication markAsTaken(User patient, Long medicationId) {
         Medication medication = medicationRepository
@@ -105,16 +104,11 @@ public class MedicationService {
         return medicationRepository.save(medication);
     }
 
-
-
-    //Data na 0:00 aby aktualizować stan wzięcia leku
     @Transactional
     @Scheduled(cron = "0 0 0 * * *", zone = "Europe/Warsaw")
     public void resetDailyStatuses() {
         medicationRepository.bulkUpdateStatus(TAKEN, SCHEDULED);
     }
-
-
 
     @Transactional
     public void deleteMedicationIfPatientCreated(Long patientId, Long medicationId) {
@@ -128,10 +122,6 @@ public class MedicationService {
 
         medicationRepository.delete(m);
     }
-
-
-
-    // ===== helpers =====
 
     private void ensureStatus(Medication med) {
         if (med.getStatus() == null) med.setStatus(SCHEDULED);
@@ -158,8 +148,8 @@ public class MedicationService {
         }
 
         applyUpdate(medication, update);
-        medication.setTherapyStartDate(update.getTherapyStartDate()); // Aktualizacja daty rozpoczęcia
-        medication.setTherapyEndDate(update.getTherapyEndDate()); // Aktualizacja daty zakończenia
+        medication.setTherapyStartDate(update.getTherapyStartDate());
+        medication.setTherapyEndDate(update.getTherapyEndDate());
         return medicationRepository.save(medication);
     }
 
@@ -167,17 +157,13 @@ public class MedicationService {
         Medication medication = medicationRepository.findById(medicationId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Medication not found"));
 
-        medication.setTherapyEndDate(endDate);  // Zakładając, że masz pole therapyEndDate w klasie Medication
+        medication.setTherapyEndDate(endDate);
         medicationRepository.save(medication);
     }
     public void deleteMedication(Long medicationId) {
-        // Sprawdzamy, czy lek istnieje
         Medication medication = medicationRepository.findById(medicationId)
                 .orElseThrow(() -> new RuntimeException("Medication not found"));
 
-        // Usuwamy lek
         medicationRepository.delete(medication);
     }
-
-
 }

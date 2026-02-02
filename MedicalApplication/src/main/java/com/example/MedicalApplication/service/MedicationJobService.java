@@ -18,7 +18,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MedicationJobService {
 
-    //  FILTR TESTOWY
     private static final Set<String> TEST_EMAILS = Set.of(
             "nikodemkaszub1@gmail.com",
             "klementyna.kowalska1@interia.pl"
@@ -52,7 +51,6 @@ public class MedicationJobService {
                 m.setStatus(MedicationStatus.SCHEDULED);
             }
 
-            // 3) pacjent + filtr testowy
             if (m.getPatient() == null || m.getPatient().getEmail() == null || m.getPatient().getEmail().isBlank()) {
                 continue;
             }
@@ -61,7 +59,6 @@ public class MedicationJobService {
                 continue;
             }
 
-
             if (m.getIntakeTime() == null) continue;
 
             LocalDateTime doseAt = LocalDateTime.of(today, m.getIntakeTime());
@@ -69,8 +66,6 @@ public class MedicationJobService {
 
 
             boolean isNotifyWindow = now.isAfter(notifyAt) && now.isBefore(notifyAt.plusMinutes(30));
-
-
 
             if (isNotifyWindow && m.getTakenAt() == null && m.getFollowUpSentAt() == null) {
 

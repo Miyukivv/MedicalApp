@@ -57,7 +57,6 @@ public class MedicationPageController {
             }
         }
 
-        // które leki user może edytować (do klodki)
         Set<Long> editableMedicationIds = new HashSet<>();
         for (Medication m : meds) {
             if (canEdit(loggedUser, m)) editableMedicationIds.add(m.getId());
@@ -75,7 +74,6 @@ public class MedicationPageController {
         model.addAttribute("canAddSelfMedication", viewingOwn);
         model.addAttribute("editableMedicationIds", editableMedicationIds);
 
-        // żeby linki i redirecty działały w widoku pacjenta
         model.addAttribute("targetPatientId", patientId);
 
         return "medications";
@@ -191,8 +189,8 @@ public class MedicationPageController {
         update.setName(name);
         update.setDose(dose);
         update.setIntakeTime(intakeTime == null || intakeTime.isBlank() ? null : LocalTime.parse(intakeTime));
-        update.setTherapyStartDate(therapyStartDate); // Ustawiamy datę rozpoczęcia
-        update.setTherapyEndDate(therapyEndDate); // Ustawiamy datę zakończenia
+        update.setTherapyStartDate(therapyStartDate);
+        update.setTherapyEndDate(therapyEndDate);
 
         Medication current = medicationService.getMedicationById(id);
 

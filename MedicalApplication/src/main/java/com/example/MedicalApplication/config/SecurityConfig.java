@@ -47,7 +47,6 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/logout")
 
-                        // ✅ przy wylogowaniu ustaw loggedIn=false
                         .addLogoutHandler((request, response, authentication) -> {
                             if (authentication != null) {
                                 String email = authentication.getName();

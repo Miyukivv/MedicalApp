@@ -3,8 +3,6 @@ package com.example.MedicalApplication.service;
 import com.example.MedicalApplication.model.User;
 import com.example.MedicalApplication.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +14,6 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-
-    
     private final PasswordEncoder passwordEncoder;
 
     public User register(User user) {
@@ -45,5 +41,4 @@ public class UserService {
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
-
 }

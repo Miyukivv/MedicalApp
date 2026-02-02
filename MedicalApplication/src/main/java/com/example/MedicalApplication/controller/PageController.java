@@ -3,7 +3,6 @@ package com.example.MedicalApplication.controller;
 import com.example.MedicalApplication.model.Medication;
 import com.example.MedicalApplication.model.MedicationStatus;
 import com.example.MedicalApplication.model.User;
-import com.example.MedicalApplication.repository.MedicationRepository;
 import com.example.MedicalApplication.repository.UserRepository;
 import com.example.MedicalApplication.service.MedicationService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PageController {
     private final UserRepository userRepository;
-    private final MedicationRepository medicationRepository;
     private final MedicationService medicationService;
     private final PasswordEncoder passwordEncoder;
 
@@ -139,22 +137,18 @@ public class PageController {
 
         var user = userRepository.findByEmail(authentication.getName()).orElseThrow();
 
-        // potrzebne, bo przy błędzie wracamy na widok, a nie redirect
         model.addAttribute("welcomeName", user.getFirstName());
 
-        // 1) nowe hasła muszą być takie same
         if (newPassword == null || !newPassword.equals(newPassword2)) {
             model.addAttribute("error", "Nowe hasła nie są takie same.");
             return "change-password";
         }
 
-        // 2) stare hasło musi pasować do tego z bazy
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             model.addAttribute("error", "Stare hasło jest nieprawidłowe.");
             return "change-password";
         }
 
-        // 3) ustaw nowe hasło (zakodowane)
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
 

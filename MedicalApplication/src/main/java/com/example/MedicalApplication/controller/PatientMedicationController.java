@@ -19,7 +19,6 @@ public class PatientMedicationController {
     private final UserService userService;
     private final MedicationService medicationService;
 
-    //pacjent dodaje np. witaminy
     @PostMapping("/{patientId}/medications")
     @ResponseStatus(HttpStatus.CREATED)
     public Medication addMedicationByPatient(@PathVariable Long patientId,
@@ -51,14 +50,10 @@ public class PatientMedicationController {
     }
     @PostMapping("/medications/delete/{id}")
     public String deleteMedication(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        // Sprawdzamy, czy pacjent może usunąć dany lek
         medicationService.deleteMedicationIfPatientCreated(user.getId(), id);
-        return "redirect:/medications";  // Przekierowanie po usunięciu leku
+        return "redirect:/medications";
     }
 
-
-
-    //pacjent aktualizuje TYLKO swoje własne leki (nie od lekarza)
     @PutMapping("/{patientId}/medications/{medId}")
     public Medication updateMedication(@PathVariable Long patientId,
                                        @PathVariable Long medId,
@@ -68,4 +63,3 @@ public class PatientMedicationController {
         return medicationService.updateMedicationByPatient(patient, medId, update);
     }
 }
-

@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/medicines")
 public class MedicineDatasetController {
 
-    // Trzymamy nazwy w pamięci (szybko). Ładujemy raz.
     private volatile List<String> namesCache = null;
     private volatile List<MedicineSuggestionDto> detailsCache = null;
 
@@ -34,8 +33,6 @@ public class MedicineDatasetController {
 
         int safeLimit = Math.max(1, Math.min(limit, 200));
 
-        // Filtr: startsWith (jak pisałaś: "au" => "au...")
-        // Jeśli chcesz "contains", zamień startsWith na contains
         return names.stream()
                 .filter(n -> n.toLowerCase(Locale.ROOT).startsWith(query))
                 .limit(safeLimit)
@@ -57,14 +54,14 @@ public class MedicineDatasetController {
             ))) {
                 CSVParser parser = CSVFormat.DEFAULT
                         .builder()
-                        .setHeader()              // weź nagłówek z pierwszego wiersza
+                        .setHeader()
                         .setSkipHeaderRecord(true)
                         .build()
                         .parse(br);
 
                 Set<String> set = new LinkedHashSet<>();
                 for (CSVRecord r : parser) {
-                    String name = r.get("name"); // kolumna "name" z CSV
+                    String name = r.get("name");
                     if (name != null) {
                         String trimmed = name.trim();
                         if (!trimmed.isBlank()) set.add(trimmed);
@@ -78,7 +75,6 @@ public class MedicineDatasetController {
                 return namesCache;
 
             } catch (Exception e) {
-                // możesz sobie dodać logowanie e, jeśli chcesz
                 namesCache = List.of();
                 return namesCache;
             }
@@ -121,7 +117,6 @@ public class MedicineDatasetController {
                         .build()
                         .parse(br);
 
-                // klucz: nazwa leku, wartość: dto (żeby uniknąć duplikatów)
                 Map<String, MedicineSuggestionDto> map = new LinkedHashMap<>();
 
                 for (CSVRecord r : parser) {
@@ -131,7 +126,7 @@ public class MedicineDatasetController {
                     String trimmed = name.trim();
                     if (trimmed.isBlank()) continue;
 
-                    String uses = buildUsesSummary(r); // use0..use4 (max 2 rzeczy)
+                    String uses = buildUsesSummary(r);
 
                     map.putIfAbsent(trimmed, new MedicineSuggestionDto(trimmed, uses));
                 }
@@ -141,7 +136,6 @@ public class MedicineDatasetController {
 
                 detailsCache = list;
 
-                // przy okazji zasil namesCache, jeśli jeszcze go nie było
                 if (namesCache == null) {
                     namesCache = list.stream().map(d -> d.name).collect(Collectors.toList());
                 }
@@ -169,7 +163,6 @@ public class MedicineDatasetController {
 
         if (uses.isEmpty()) return "";
 
-        // Twoje wymaganie: jeśli jest więcej niż 1, pokaż 2 po przecinku
         if (uses.size() >= 2) return uses.get(0) + ", " + uses.get(1);
         return uses.get(0);
     }

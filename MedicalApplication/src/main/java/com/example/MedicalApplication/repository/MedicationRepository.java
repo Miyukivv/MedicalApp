@@ -32,10 +32,7 @@ where (m.therapyEndDate is null or m.therapyEndDate >= :today)
 """)
     List<Medication> findActiveForNotificationsFetch(@Param("today") LocalDate today);
 
-
-    //NOWE: leki dodane przez konkretnego doktora
     List<Medication> findByDoctorOrderByIntakeTimeAsc(User doctor);
-
 
 
     @Modifying

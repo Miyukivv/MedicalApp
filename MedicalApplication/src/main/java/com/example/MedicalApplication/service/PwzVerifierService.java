@@ -23,7 +23,7 @@ public class PwzVerifierService {
             br.lines()
                     .map(String::trim)
                     .filter(s -> !s.isBlank())
-                    .skip(1)                 // <- pomija nagłówek
+                    .skip(1)
                     .forEach(allowed::add);
         }
     }

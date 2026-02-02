@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
@@ -28,7 +27,6 @@ public class DoctorPageController {
     private final UserRepository userRepository;
     private final DoctorPatientRepository doctorPatientRepository;
     private final MedicationService medicationService;
-   // private final ReminderService reminderService;
     public record PatientRow(Long id, String fullName, String lastVisitDisplay, String lastVisitIso) {}
 
     @GetMapping("/doctor")
@@ -142,8 +140,6 @@ public class DoctorPageController {
                 .build();
 
         Medication saved = medicationService.addMedicationByDoctor(doctor, patient, m);
-
-        //reminderService.createReminder(patient, saved, LocalDateTime.now(), 30, true);
 
         return "redirect:/medications?patientId=" + patientId + "&id=" + saved.getId();
     }

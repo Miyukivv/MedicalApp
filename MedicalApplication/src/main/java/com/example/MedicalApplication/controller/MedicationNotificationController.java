@@ -23,7 +23,6 @@ public class MedicationNotificationController {
         Medication m = medicationRepository.findByConfirmationToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid token"));
 
-        // potwierdzamy tylko dla bieżącej "pendingDoseDate"
         if (m.getTakenAt() == null) {
             m.setTakenAt(LocalDateTime.now());
             m.setStatus(MedicationStatus.TAKEN);
